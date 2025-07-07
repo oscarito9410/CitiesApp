@@ -11,6 +11,7 @@ jobs:
     name: 🧪 Compose Tests
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
       - run: ./gradlew composeApp:allTests --stacktrace
 
@@ -18,6 +19,7 @@ jobs:
     name: 🧪 Data Tests
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
       - run: ./gradlew data:allTests --stacktrace
 
@@ -25,5 +27,6 @@ jobs:
     name: 🧪 Domain Tests
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
       - run: ./gradlew domain:allTests --stacktrace
