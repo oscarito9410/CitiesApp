@@ -8,7 +8,6 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.oscarp.citiesapp.data.local.dao.CityDao
 import com.oscarp.citiesapp.data.local.entities.CityEntity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 
 @Database(
     entities = [CityEntity::class],
