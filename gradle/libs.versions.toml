@@ -27,6 +27,7 @@ moshi = "1.15.2"
 room = "2.7.2"
 kotlinxSerializationJson = "1.9.0"
 ktor = "3.2.1"
+detekt = "1.23.5"
 
 
 
@@ -72,3 +73,4 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 ksp = { id = "com.google.devtools.ksp", version = "2.2.0-2.0.2" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
