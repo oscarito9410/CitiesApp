@@ -31,7 +31,7 @@ jobs:
       - run: chmod +x ./gradlew
       - run: ./gradlew data:allTests --stacktrace
   test-domain:
-    name: 🧪 Data Tests
+    name: 🧪 Domain Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
