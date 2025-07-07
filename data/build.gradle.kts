@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -59,7 +60,12 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                // Add KMP dependencies here
+                api(libs.koin.core)
+                implementation(libs.koin.compose)
+                implementation(libs.coroutines.core)
+                implementation(libs.moshi)
+                implementation(libs.moshi.kotlin)
+                implementation(libs.okio)
             }
         }
 
@@ -71,17 +77,11 @@ kotlin {
 
         androidMain {
             dependencies {
-                // Add Android-specific dependencies here. Note that this source set depends on
-                // commonMain by default and will correctly pull the Android artifacts of any KMP
-                // dependencies declared in commonMain.
-            }
-        }
-
-        getByName("androidDeviceTest") {
-            dependencies {
-                implementation(libs.androidx.runner)
-                implementation(libs.androidx.core)
-                implementation(libs.androidx.testExt.junit)
+                // Koin-Dependency injection
+                implementation(libs.koin.android)
+                implementation(libs.koin.androidx.compose)
+                implementation(libs.room.runtime)
+                implementation(libs.room.ktx)
             }
         }
 
@@ -95,5 +95,8 @@ kotlin {
             }
         }
     }
+}
 
+dependencies {
+    add("kspAndroid", libs.room.compiler)
 }
