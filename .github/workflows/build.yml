@@ -30,4 +30,16 @@ jobs:
           java-version: '17'
       - run: chmod +x ./gradlew
       - run: ./gradlew data:allTests --stacktrace
+  test-domain:
+    name: 🧪 Data Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+      - run: chmod +x ./gradlew
+      - run: ./gradlew domain:allTests --stacktrace
+
 
