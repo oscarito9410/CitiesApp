@@ -8,7 +8,7 @@ on:
 
 jobs:
   test-compose:
-    name: 🧪 Compose Tests
+    name: 🎨 Compose Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,7 +16,7 @@ jobs:
       - run: ./gradlew composeApp:allTests --stacktrace
 
   test-data:
-    name: 🧪 Data Tests
+    name: ☁️ Data Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +24,7 @@ jobs:
       - run: ./gradlew data:allTests --stacktrace
 
   test-domain:
-    name: 🧪 Domain Tests
+    name: 🧑‍💼 Domain Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
