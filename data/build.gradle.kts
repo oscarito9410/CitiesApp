@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -69,8 +70,11 @@ kotlin {
                 implementation(libs.ktor.json)
                 implementation(libs.ktor.logging)
 
-
                 implementation(libs.kotlinX.serializationJson)
+
+
+                implementation(libs.room.runtime)
+                implementation(libs.sqlite.bundled)
 
             }
         }
@@ -102,4 +106,11 @@ kotlin {
 
 dependencies {
     add("kspAndroid", libs.room.compiler)
+    add("kspIosX64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
