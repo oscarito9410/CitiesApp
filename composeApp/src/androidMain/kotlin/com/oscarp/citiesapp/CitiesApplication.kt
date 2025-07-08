@@ -10,8 +10,8 @@ class CitiesApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         initKoin {
-           androidLogger(level = Level.INFO)
-           androidContext(androidContext = this@CitiesApplication)
+            androidLogger(level = Level.INFO)
+            androidContext(androidContext = this@CitiesApplication)
         }
     }
 }
