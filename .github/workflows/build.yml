@@ -19,6 +19,9 @@ jobs:
 
       - name: Run Detekt All
         uses: natiginfo/action-detekt-all@1.23.8
+        # optionally pass CLI flags if you have a custom config:
+        with:
+          args: --config config/detekt/detekt.yml
   test-compose:
     name: 🧪 Compose Tests
     needs: detekt
