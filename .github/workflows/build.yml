@@ -8,20 +8,14 @@ on:
 
 jobs:
   detekt:
-    name: 🕵️ Static Analysis (Detekt All)
+    name: 🕵️ Static Analysis (Detekt)
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-gradle
+      - name: Run Detekt
+        run: ./gradlew detekt
 
-      - name: Set up Gradle
-        uses: ./.github/actions/setup-gradle
-
-      - name: Run Detekt All
-        uses: natiginfo/action-detekt-all@1.23.8
-        # optionally pass CLI flags if you have a custom config:
-        with:
-          args: --config config/detekt/detekt.yml
   test-compose:
     name: 🧪 Compose Tests
     needs: detekt
