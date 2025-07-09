@@ -1,4 +1,5 @@
 import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 
 plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
@@ -13,20 +14,33 @@ plugins {
 }
 
 detekt {
-    buildUponDefaultConfig = true
-    allRules = true
-    parallel = true
+    source.from(files(rootProject.rootDir))
     config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+    parallel = true
+    autoCorrect = true
+    buildUponDefaultConfig = true
 }
 
-tasks.register("detektAll") {
-    description = "Runs Detekt on all subprojects"
-    group = "verification"
+dependencies {
+    detektPlugins(libs.detekt.formatting)
+}
 
-    // For each subproject, add all Detekt tasks as dependencies
-    rootProject.subprojects.forEach { subproject ->
-        subproject.tasks.matching { it is Detekt }.configureEach {
-            this@register.dependsOn(this)
+tasks {
+    fun SourceTask.config() {
+        include("**/*.kt")
+        exclude("**/*.kts")
+        exclude("**/resources/**")
+        exclude("**/generated/**")
+        exclude("**/build/**")
+    }
+    withType<DetektCreateBaselineTask>().configureEach {
+        config()
+    }
+    withType<Detekt>().configureEach {
+        config()
+
+        reports {
+            sarif.required.set(true)
         }
     }
 }
