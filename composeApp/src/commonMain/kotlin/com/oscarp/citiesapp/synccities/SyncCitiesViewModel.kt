@@ -3,7 +3,12 @@ package com.oscarp.citiesapp.synccities
 import com.oscarp.citiesapp.common.SharedViewModel
 import com.oscarp.citiesapp.domain.models.SyncProgress
 import com.oscarp.citiesapp.domain.usecases.SyncCitiesUseCase
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class SyncCitiesViewModel(
@@ -18,7 +23,6 @@ class SyncCitiesViewModel(
             SyncProgress.Started
         )
 
-    /** Kick off the sync process */
     fun startSync() {
         viewModelScope.launch {
             syncCitiesUseCase()
