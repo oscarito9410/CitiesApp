@@ -3,8 +3,12 @@ name: Quality Check PR action
 on:
   push:
     branches:
-      - 'master'
+      - master
   pull_request:
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   detekt:
@@ -14,31 +18,35 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
       - name: Run Detekt
-        run: ./gradlew detekt -parallel
+        run: ./gradlew detekt --parallel
 
-  test-compose:
-    name: 🧪 Compose Tests
+  tests:
+    name: 🧪 Run All Tests
     needs: detekt
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
-      - run: ./gradlew composeApp:allTests --stacktrace
+      - name: Run Tests
+        run: ./gradlew composeApp:allTests data:allTests domain:allTests --parallel --continue
 
-  test-data:
-    name: 🧪 Data Tests
-    needs: detekt
+  coverage:
+    name: 📊 Coverage Report
+    needs: tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
-      - run: ./gradlew data:allTests --stacktrace
-
-  test-domain:
-    name: 🧪 Domain Tests
-    needs: detekt
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-gradle
-      - run: ./gradlew domain:allTests --stacktrace
+      - name: Generate Kover XML report
+        run: ./gradlew koverXmlReportCoverage
+      - name: Publish coverage to PR
+        id: kover
+        uses: mi-kas/kover-report@v1
+        with:
+          path: ${{ github.workspace }}/composeApp/build/reports/kover/reportCoverage.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: Code Coverage
+          update-comment: true
+          min-coverage-overall: 80
+          min-coverage-changed-files: 80
+          coverage-counter-type: LINE

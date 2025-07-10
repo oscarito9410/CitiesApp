@@ -11,6 +11,8 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
     alias(libs.plugins.detekt)
+    alias(libs.plugins.kover)
+    alias(libs.plugins.kotlinAndroid) apply false
 }
 
 detekt {

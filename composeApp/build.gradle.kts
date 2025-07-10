@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.kover)
 }
 
 kotlin {
@@ -84,5 +85,25 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    kover(project(":composeApp"))
+    kover(project(":data"))
+    kover(project(":domain"))
 }
 
+
+kover {
+    currentProject {
+        createVariant("coverage") {
+            addWithDependencies("debug")
+        }
+    }
+
+    reports {
+        // filters for all report types of all build variants
+        filters {
+            excludes {
+                androidGeneratedClasses()
+            }
+        }
+    }
+}
