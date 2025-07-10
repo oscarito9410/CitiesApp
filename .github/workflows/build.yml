@@ -6,6 +6,10 @@ on:
       - master
   pull_request:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   detekt:
     name: 🕵️ Static Analysis (Detekt)
@@ -16,49 +20,30 @@ jobs:
       - name: Run Detekt
         run: ./gradlew detekt --parallel
 
-  test-compose:
-    name: 🧪 Compose Tests
+  tests:
+    name: 🧪 Run All Tests
     needs: detekt
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
-      - run: ./gradlew composeApp:allTests --stacktrace
-
-  test-data:
-    name: 🧪 Data Tests
-    needs: detekt
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-gradle
-      - run: ./gradlew data:allTests --stacktrace
-
-  test-domain:
-    name: 🧪 Domain Tests
-    needs: detekt
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-gradle
-      - run: ./gradlew domain:allTests --stacktrace
+      - name: Run Tests
+        run: ./gradlew composeApp:allTests data:allTests domain:allTests --parallel --continue
 
   coverage:
     name: 📊 Coverage Report
-    needs: [ test-compose, test-data, test-domain ]
+    needs: tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
-
       - name: Generate Kover XML report
         run: ./gradlew koverXmlReportCoverage
       - name: Publish coverage to PR
         id: kover
         uses: mi-kas/kover-report@v1
         with:
-          path: |
-            ${{ github.workspace }}/composeApp/build/reports/kover/reportCoverage.xml
+          path: ${{ github.workspace }}/composeApp/build/reports/kover/reportCoverage.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           title: Code Coverage
           update-comment: true
