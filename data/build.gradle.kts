@@ -33,7 +33,6 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 api(libs.koin.core)
-                implementation(libs.koin.compose)
                 implementation(libs.coroutines.core)
 
                 api(libs.ktor.core)
