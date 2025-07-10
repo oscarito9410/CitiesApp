@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kover)
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 
@@ -32,7 +33,7 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
                 api(libs.koin.core)
                 implementation(libs.coroutines.core)
-
+                implementation("co.touchlab:kermit:2.0.4")
             }
         }
 

@@ -7,11 +7,12 @@ import androidx.room.RoomDatabaseConstructor
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.oscarp.citiesapp.data.local.dao.CityDao
 import com.oscarp.citiesapp.data.local.entities.CityEntity
+import com.oscarp.citiesapp.data.local.entities.CityFtsEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
 @Database(
-    entities = [CityEntity::class],
+    entities = [CityEntity::class, CityFtsEntity::class],
     version = AppDatabaseConfiguration.CURRENT_VERSION,
     exportSchema = false
 )

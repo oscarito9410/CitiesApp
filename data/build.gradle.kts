@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.kover)
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 
@@ -31,6 +32,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(project(":domain"))
                 implementation(libs.kotlin.stdlib)
                 api(libs.koin.core)
                 implementation(libs.coroutines.core)
@@ -45,6 +47,7 @@ kotlin {
 
                 implementation(libs.room.runtime)
                 implementation(libs.sqlite.bundled)
+                implementation("co.touchlab:kermit:2.0.4")
 
             }
         }
@@ -63,6 +66,7 @@ kotlin {
                 implementation(libs.room.runtime)
                 implementation(libs.room.ktx)
                 implementation(libs.ktor.android)
+                implementation(libs.ktor.okhttp)
             }
         }
 
