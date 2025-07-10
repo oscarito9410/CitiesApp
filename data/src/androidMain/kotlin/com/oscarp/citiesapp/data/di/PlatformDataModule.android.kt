@@ -2,7 +2,7 @@ package com.oscarp.citiesapp.data.di
 
 import androidx.room.RoomDatabase
 import com.oscarp.citiesapp.data.importers.CityDataImporter
-import com.oscarp.citiesapp.data.importers.CityDataImporterAndroidImpl
+import com.oscarp.citiesapp.data.importers.CityDataImporterImpl
 import com.oscarp.citiesapp.data.local.AppDatabase
 import com.oscarp.citiesapp.data.local.dao.CityDao
 import com.oscarp.citiesapp.data.local.getDatabaseBuilder
@@ -19,7 +19,7 @@ actual fun platformModule() = module {
     }
 
     single<CityDataImporter> {
-        CityDataImporterAndroidImpl(
+        CityDataImporterImpl(
             cityDao = get<CityDao>(),
             json = get()
         )

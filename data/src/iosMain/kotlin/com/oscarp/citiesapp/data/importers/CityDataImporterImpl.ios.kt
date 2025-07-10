@@ -14,7 +14,7 @@ import kotlinx.io.readByteArray
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 
-class CityDataImporterIosImpl(
+class CityDataImporterImpl(
     private val cityDao: CityDao,
     private val json: Json = Json { ignoreUnknownKeys = true }
 ) : CityDataImporter {

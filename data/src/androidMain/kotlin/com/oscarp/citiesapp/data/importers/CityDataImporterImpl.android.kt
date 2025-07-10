@@ -14,7 +14,7 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 
-class CityDataImporterAndroidImpl(
+class CityDataImporterImpl(
     private val cityDao: CityDao,
     private val json: Json = Json { ignoreUnknownKeys = true }
 ) : CityDataImporter {
