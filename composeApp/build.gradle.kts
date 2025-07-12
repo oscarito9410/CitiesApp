@@ -104,6 +104,18 @@ kover {
         filters {
             excludes {
                 androidGeneratedClasses()
+                classes(
+                    listOf(
+                        "*di.*",
+                        "*Module.*",
+                        "*Provider.*"
+                    )
+                )
+            }
+        }
+        verify {
+            rule {
+                minBound(80)
             }
         }
     }
