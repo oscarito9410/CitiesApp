@@ -26,6 +26,7 @@ class CityRepositoryImpl(
         importer.seedFromStream(channel, CHUNK_SIZE)
             .catch {
                 Logger.e("CityRepository", it)
+                throw it
             }
             .collect {
                 emit(it)

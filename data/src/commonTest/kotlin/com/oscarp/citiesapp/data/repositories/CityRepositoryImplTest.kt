@@ -1,14 +1,17 @@
+package com.oscarp.citiesapp.data.repositories
+
 import app.cash.turbine.test
 import com.oscarp.citiesapp.data.importers.CityDataImporter
 import com.oscarp.citiesapp.data.remote.CityApiService
-import com.oscarp.citiesapp.data.repositories.CityRepositoryImpl
 import dev.mokkery.answering.returns
+import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.core.toByteArray
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -20,7 +23,7 @@ class CityRepositoryImplTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = UnconfinedTestDispatcher()
 
-    // Create mocks
+    // mocks
     private val api: CityApiService = mock()
     private val importer: CityDataImporter = mock()
 
@@ -32,16 +35,37 @@ class CityRepositoryImplTest {
 
     @Test
     fun `syncCities emits importer values in order`() = runTest(dispatcher) {
-        // Arrange: set up behavior with Mokkery
+        // given
         everySuspend { api.fetchCitiesStream() } returns ByteReadChannel("[]".toByteArray())
-        everySuspend { importer.seedFromStream(any(), any()) } returns flowOf(5, 15, 20)
+        every { importer.seedFromStream(any(), any()) } returns flowOf(
+            5,
+            15,
+            20
+        )
 
-        // Act & Assert: collect and verify emissions
+        // when & then
         repo.syncCities().test {
             assertEquals(5, awaitItem())
             assertEquals(15, awaitItem())
             assertEquals(20, awaitItem())
             awaitComplete()
+        }
+    }
+
+    @Test
+    fun `syncCities swallows importer exceptions and completes`() = runTest(dispatcher) {
+        // given
+        everySuspend { api.fetchCitiesStream() } returns ByteReadChannel("[]".toByteArray())
+
+        // when
+        every { importer.seedFromStream(any(), any()) } returns flow {
+            throw IllegalStateException("network error")
+        }
+
+        // then
+        repo.syncCities().test {
+            val resultError = awaitError()
+            assertEquals("network error", resultError.message)
         }
     }
 }
