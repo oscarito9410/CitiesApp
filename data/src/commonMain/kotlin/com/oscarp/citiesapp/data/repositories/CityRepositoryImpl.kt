@@ -18,7 +18,7 @@ class CityRepositoryImpl(
 ) : CityRepository {
 
     companion object {
-        private const val CHUNK_SIZE = 10000
+        const val CHUNK_SIZE = 10000
     }
 
     override fun syncCities(): Flow<TotalInserted> = flow {

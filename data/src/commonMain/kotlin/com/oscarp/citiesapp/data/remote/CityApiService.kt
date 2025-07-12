@@ -5,8 +5,12 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.utils.io.ByteReadChannel
 
-class CityApiService(private val client: HttpClient) {
-    suspend fun fetchCitiesStream(): ByteReadChannel =
+interface CityApiService {
+    suspend fun fetchCitiesStream(): ByteReadChannel
+}
+
+class CityApiServiceImpl(private val client: HttpClient) : CityApiService {
+    override suspend fun fetchCitiesStream(): ByteReadChannel =
         client.get(
             "${BASE_URL}/${CITIES_FILE_PATH}"
         )

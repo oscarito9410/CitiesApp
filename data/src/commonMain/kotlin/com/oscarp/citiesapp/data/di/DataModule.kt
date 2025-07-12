@@ -4,6 +4,7 @@ import com.oscarp.citiesapp.data.importers.CityDataImporter
 import com.oscarp.citiesapp.data.local.getCityDao
 import com.oscarp.citiesapp.data.local.getRoomDatabase
 import com.oscarp.citiesapp.data.remote.CityApiService
+import com.oscarp.citiesapp.data.remote.CityApiServiceImpl
 import com.oscarp.citiesapp.data.remote.KtorHttpClientProvider
 import com.oscarp.citiesapp.data.repositories.CityRepositoryImpl
 import com.oscarp.citiesapp.domain.repositories.CityRepository
@@ -26,8 +27,8 @@ fun dataModule(): Module = module {
     single {
         get<KtorHttpClientProvider>().create()
     }
-    single {
-        CityApiService(client = get())
+    single<CityApiService> {
+        CityApiServiceImpl(client = get())
     }
 
     single<CityRepository> {

@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.room)
     alias(libs.plugins.kover)
     alias(libs.plugins.kotlinxSerialization)
+    id("dev.mokkery") version "2.9.0"
 }
 
 
@@ -55,6 +56,9 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
+                // adjust to latest
+                implementation("app.cash.turbine:turbine:0.12.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.0")
             }
         }
 
