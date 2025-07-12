@@ -108,6 +108,7 @@ kover {
                     listOf(
                         "*di.*",
                         "*Module.*",
+                        "AppDatabase.*",
                         "*Provider.*"
                     )
                 )
