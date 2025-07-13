@@ -1,40 +1,42 @@
 package com.oscarp.citiesapp.synccities
 
 import com.oscarp.citiesapp.common.SharedViewModel
-import com.oscarp.citiesapp.domain.models.SyncProgress
 import com.oscarp.citiesapp.domain.usecases.SyncCitiesUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class SyncCitiesViewModel(
-    private val syncCitiesUseCase: SyncCitiesUseCase,
-    private val ioDispatcher: CoroutineDispatcher
+    private val useCase: SyncCitiesUseCase,
+    private val ioDispatcher: CoroutineDispatcher,
 ) : SharedViewModel() {
 
-    private val _syncProgress = MutableStateFlow<SyncProgress>(SyncProgress.Started)
-    val syncProgress: StateFlow<SyncProgress> = _syncProgress
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            SyncProgress.Started
-        )
+    private val _state = MutableStateFlow<SyncViewState>(SyncViewState.Idle)
+    val state: StateFlow<SyncViewState> = _state
 
-    fun startSync() {
+    fun processIntent(intent: SyncIntent) {
+        when (intent) {
+            SyncIntent.StartSync -> startSync()
+        }
+    }
+
+    private fun startSync() {
         viewModelScope.launch(ioDispatcher) {
-            syncCitiesUseCase()
-                .catch { _syncProgress.value = SyncProgress.Error(it) }
-                .onCompletion {
-                    _syncProgress.value = SyncProgress.Completed
+            useCase()
+                .onStart { _state.value = SyncViewState.Loading }
+                .map {
+                    SyncViewState.Inserting(it)
                 }
-                .collect {
-                    _syncProgress.value = it
+                .onCompletion { _state.value = SyncViewState.Completed }
+                .catch { e ->
+                    _state.value = SyncViewState.Error(e)
                 }
+                .collect { _state.value = it }
         }
     }
 }

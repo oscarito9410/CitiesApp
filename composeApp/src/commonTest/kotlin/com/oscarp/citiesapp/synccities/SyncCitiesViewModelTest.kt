@@ -1,6 +1,5 @@
 package com.oscarp.citiesapp.synccities
 
-import com.oscarp.citiesapp.domain.models.SyncProgress
 import com.oscarp.citiesapp.domain.usecases.SyncCitiesUseCase
 import dev.mokkery.answering.returns
 import dev.mokkery.every
@@ -17,7 +16,8 @@ import kotlinx.coroutines.test.setMain
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertNotNull
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SyncCitiesViewModelTest {
@@ -40,28 +40,34 @@ class SyncCitiesViewModelTest {
     }
 
     @Test
-    fun `startSync emits Started Inserting and Completed`() = runTest(dispatcher) {
-        // Arrange
-        every { useCase() } returns flowOf(
-            SyncProgress.Inserting(5),
-            SyncProgress.Inserting(10)
-        )
+    fun `processIntent StartSync emits Loading Inserting and Completed in order`() =
+        runTest(dispatcher) {
+            // stub the use case to emit 5 then 10
+            every { useCase() } returns flowOf(5, 10)
 
-        viewModel.startSync()
-        advanceUntilIdle()
+            assertEquals(SyncViewState.Idle, viewModel.state.value)
 
-        // Subscribe first
-        assertNotNull(viewModel.syncProgress.value)
-    }
+            viewModel.processIntent(SyncIntent.StartSync)
+            advanceUntilIdle()
+
+            val state = viewModel.state.value
+            assertEquals(SyncViewState.Completed, state)
+        }
 
     @Test
-    fun `startSync emits Error when repository fails`() = runTest(dispatcher) {
-        // given
-        val ex = IllegalStateException("network down")
-        every { useCase() } returns flow { throw ex }
+    fun `processIntent StartSync on error emits Idle Loading Completed and Error state`() =
+        runTest(dispatcher) {
+            // given
+            val ex = IllegalStateException("network down")
+            every { useCase() } returns flow { throw ex }
 
-        // when
-        viewModel.startSync()
-        advanceUntilIdle()
-    }
+            // when
+            viewModel.processIntent(SyncIntent.StartSync)
+            advanceUntilIdle()
+
+            // then
+            val errorState = viewModel.state.value
+            assertTrue(errorState is SyncViewState.Error)
+            assertEquals("network down", errorState.error.message)
+        }
 }

@@ -11,13 +11,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.oscarp.citiesapp.synccities.SyncCitiesViewModel
+import com.oscarp.citiesapp.synccities.SyncIntent
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 @Composable
 @Preview
 fun App(viewModel: SyncCitiesViewModel = koinInject()) {
-    val syncProgressState = viewModel.syncProgress.collectAsState()
+    val state = viewModel.state.collectAsState()
 
     MaterialTheme {
         Column(
@@ -27,9 +28,11 @@ fun App(viewModel: SyncCitiesViewModel = koinInject()) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(onClick = {
-                viewModel.startSync()
+                viewModel.processIntent(
+                    SyncIntent.StartSync
+                )
             }) {
-                Text("${syncProgressState.value}")
+                Text("${state.value}")
             }
         }
     }
