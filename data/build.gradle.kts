@@ -1,4 +1,3 @@
-
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -60,6 +59,15 @@ kotlin {
             }
         }
 
+        androidUnitTest {
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.turbine)
+                implementation(libs.coroutines.test)
+                implementation(libs.mockk)
+            }
+        }
+
         androidMain {
             dependencies {
                 implementation(libs.koin.android)
@@ -76,6 +84,9 @@ kotlin {
                 implementation(libs.ktor.darwin)
             }
         }
+    }
+    sourceSets.androidInstrumentedTest.dependencies {
+        implementation(kotlin("test"))
     }
 }
 

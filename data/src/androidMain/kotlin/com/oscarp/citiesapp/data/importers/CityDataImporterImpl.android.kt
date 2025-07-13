@@ -5,7 +5,7 @@ import com.oscarp.citiesapp.data.mappers.mapEntity
 import com.oscarp.citiesapp.data.remote.CityDto
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.jvm.javaio.toInputStream
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -16,7 +16,8 @@ import kotlinx.serialization.json.decodeFromStream
 
 class CityDataImporterImpl(
     private val cityDao: CityDao,
-    private val json: Json = Json { ignoreUnknownKeys = true }
+    private val json: Json = Json { ignoreUnknownKeys = true },
+    private val ioDispatcher: CoroutineDispatcher
 ) : CityDataImporter {
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -37,5 +38,5 @@ class CityDataImporterImpl(
                     }
                 }
         }
-    }.flowOn(Dispatchers.IO)
+    }.flowOn(ioDispatcher)
 }
