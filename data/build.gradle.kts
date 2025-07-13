@@ -1,4 +1,3 @@
-
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -9,6 +8,8 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.kover)
+    alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.mokkery)
 }
 
 
@@ -31,6 +32,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(project(":domain"))
                 implementation(libs.kotlin.stdlib)
                 api(libs.koin.core)
                 implementation(libs.coroutines.core)
@@ -45,24 +47,35 @@ kotlin {
 
                 implementation(libs.room.runtime)
                 implementation(libs.sqlite.bundled)
-
+                implementation(libs.kermit)
             }
         }
 
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
+                implementation(libs.turbine)
+                implementation(libs.coroutines.test)
+            }
+        }
+
+        androidUnitTest {
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.turbine)
+                implementation(libs.coroutines.test)
+                implementation(libs.mockk)
             }
         }
 
         androidMain {
             dependencies {
-                // Koin-Dependency injection
                 implementation(libs.koin.android)
                 implementation(libs.koin.androidx.compose)
                 implementation(libs.room.runtime)
                 implementation(libs.room.ktx)
                 implementation(libs.ktor.android)
+                implementation(libs.ktor.okhttp)
             }
         }
 
@@ -71,6 +84,9 @@ kotlin {
                 implementation(libs.ktor.darwin)
             }
         }
+    }
+    sourceSets.androidInstrumentedTest.dependencies {
+        implementation(kotlin("test"))
     }
 }
 

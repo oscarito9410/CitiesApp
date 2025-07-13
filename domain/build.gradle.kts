@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kover)
+    alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.mokkery)
 }
 
 
@@ -32,19 +34,20 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
                 api(libs.koin.core)
                 implementation(libs.coroutines.core)
-
+                implementation(libs.kermit)
             }
         }
 
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
+                implementation(libs.turbine)
+                implementation(libs.coroutines.test)
             }
         }
 
         androidMain {
             dependencies {
-                // Koin-Dependency injection
                 implementation(libs.koin.android)
                 implementation(libs.koin.androidx.compose)
                 implementation(libs.room.runtime)

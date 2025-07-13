@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.detekt)
     alias(libs.plugins.kover)
+    alias(libs.plugins.mokkery)
 }
 
 kotlin {
@@ -47,11 +48,14 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.koin.compose)
             implementation(project(":data"))
             implementation(project(":domain"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.turbine)
+            implementation(libs.coroutines.test)
         }
     }
 }
@@ -103,6 +107,25 @@ kover {
         filters {
             excludes {
                 androidGeneratedClasses()
+                classes(
+                    listOf(
+                        "*di.*",
+                        "*Module.*",
+                        "com.oscarp.citiesapp.data.local.AppDatabase*",
+                        "com.oscarp.citiesapp.data.local.AppDatabaseConstructor*",
+                        "com.oscarp.citiesapp.data.local.DatabaseBuilderKt*",
+                        "com.oscarp.citiesapp.data.local.*Provider*",
+                        "com.oscarp.citiesapp.data.local.dao.*",
+                        "com.oscarp.citiesapp.data.remote.KtorHttpClientProvider*",
+                        "com.oscarp.citiesapp.data.remote.CityApiService",
+                        "com.oscarp.citiesapp.data.remote.CityApiServiceImpl*"
+                    )
+                )
+            }
+        }
+        verify {
+            rule {
+                minBound(80)
             }
         }
     }
