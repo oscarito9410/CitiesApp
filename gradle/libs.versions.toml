@@ -21,17 +21,15 @@ koinCompose = "4.1.0"
 koinAndroid = "4.1.0"
 koinAndroidxCompose = "4.1.0"
 koinCore = "4.1.0"
-mockk = "1.13.8"
 turbine = "1.2.1"
 coroutines = "1.10.2"
-moshi = "1.15.2"
 room = "2.7.2"
 kotlinxSerializationJson = "1.9.0"
 ktor = "3.2.1"
 detekt = "1.23.8"
 sqlite = "2.5.2"
 material = "1.12.0"
-
+kermit = "2.0.4"
 
 [libraries]
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detektFormatting" }
@@ -55,6 +53,7 @@ androidx-runner = { group = "androidx.test", name = "runner", version.ref = "run
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
@@ -69,7 +68,7 @@ ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
-
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
 
 [plugins]
@@ -85,3 +84,4 @@ room = { id = "androidx.room", version.ref = "room" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version = "0.9.1" }
+mokkery = { id = "dev.mokkery", version = "2.9.0" }

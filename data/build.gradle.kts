@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.room)
     alias(libs.plugins.kover)
     alias(libs.plugins.kotlinxSerialization)
-    id("dev.mokkery") version "2.9.0"
+    alias(libs.plugins.mokkery)
 }
 
 
@@ -48,23 +48,20 @@ kotlin {
 
                 implementation(libs.room.runtime)
                 implementation(libs.sqlite.bundled)
-                implementation("co.touchlab:kermit:2.0.4")
-
+                implementation(libs.kermit)
             }
         }
 
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
-                // adjust to latest
-                implementation("app.cash.turbine:turbine:0.12.1")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.0")
+                implementation(libs.turbine)
+                implementation(libs.coroutines.test)
             }
         }
 
         androidMain {
             dependencies {
-                // Koin-Dependency injection
                 implementation(libs.koin.android)
                 implementation(libs.koin.androidx.compose)
                 implementation(libs.room.runtime)

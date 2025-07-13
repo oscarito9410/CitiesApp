@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 
-class SyncCitiesUseCase(private val repository: CityRepository) {
-    operator fun invoke(): Flow<SyncProgress> =
+open class SyncCitiesUseCase(private val repository: CityRepository) {
+    open operator fun invoke(): Flow<SyncProgress> =
         repository.syncCities()
             .map<Int, SyncProgress> { count ->
                 Logger.i("inserting.. $count")
