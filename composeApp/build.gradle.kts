@@ -116,7 +116,9 @@ kover {
                         "com.oscarp.citiesapp.data.local.DatabaseBuilderKt*",
                         "com.oscarp.citiesapp.data.local.*Provider*",
                         "com.oscarp.citiesapp.data.local.dao.*",
-                        "com.oscarp.citiesapp.data.remote.KtorHttpClientProvider*"
+                        "com.oscarp.citiesapp.data.remote.KtorHttpClientProvider*",
+                        "com.oscarp.citiesapp.data.remote.CityApiService",
+                        "com.oscarp.citiesapp.data.remote.CityApiServiceImpl*"
                     )
                 )
             }
