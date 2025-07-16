@@ -16,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import citiesapp.composeapp.generated.resources.Res
 import citiesapp.composeapp.generated.resources.text_error_sync_cities
@@ -31,6 +32,10 @@ import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
+
+const val TagLoading = "LoadingContent"
+const val TagNotInternet = "NoInternetContent"
+const val TagCompleted = "CompletedContent"
 
 @Composable
 fun SyncScreen(viewModel: SyncCitiesViewModel = koinInject()) {
@@ -77,6 +82,7 @@ private fun LoadingContent(percent: Int) {
         )
     }
     Column(
+        modifier = Modifier.testTag(TagLoading),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -100,7 +106,9 @@ private fun LoadingContent(percent: Int) {
                 text = stringResource(Res.string.text_sync_saving_cities),
                 style = MaterialTheme.typography.bodyLarge
             )
-            AnimatedPercentText(percent = percent)
+            AnimatedPercentText(
+                percent = percent,
+            )
         }
     }
 }
@@ -108,6 +116,7 @@ private fun LoadingContent(percent: Int) {
 @Composable
 private fun NoInternetContent(onRetry: () -> Unit) {
     Column(
+        modifier = Modifier.testTag(TagNotInternet),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -118,9 +127,7 @@ private fun NoInternetContent(onRetry: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onRetry) {
-            Text(
-                stringResource(Res.string.text_sync_retry)
-            )
+            Text(stringResource(Res.string.text_sync_retry))
         }
     }
 }
@@ -128,6 +135,7 @@ private fun NoInternetContent(onRetry: () -> Unit) {
 @Composable
 private fun CompletedContent() {
     Column(
+        modifier = Modifier.testTag(TagCompleted),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
