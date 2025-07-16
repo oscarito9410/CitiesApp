@@ -1,5 +1,6 @@
 package com.oscarp.citiesapp.domain.repositories
 
+import com.oscarp.citiesapp.domain.models.CityDownload
 import kotlinx.coroutines.flow.Flow
 
 interface CityRepository {
@@ -7,5 +8,5 @@ interface CityRepository {
      * Syncs city data (network → DB) in the background and
      * emits the total inserted so far.
      */
-    fun syncCities(): Flow<Int>
+    fun syncCities(): Flow<CityDownload>
 }

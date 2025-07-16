@@ -48,7 +48,14 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.compottie)
+            implementation(libs.compottie.dot)
+            implementation(libs.compottie.resources)
+            implementation(libs.kermit)
             implementation(project(":data"))
             implementation(project(":domain"))
         }
@@ -119,7 +126,8 @@ kover {
                         "com.oscarp.citiesapp.data.remote.KtorHttpClientProvider*",
                         "com.oscarp.citiesapp.data.remote.CityApiService",
                         "com.oscarp.citiesapp.data.remote.CityApiServiceImpl*"
-                    )
+                        "com.oscarp.citiesapp.theme.*",
+                        )
                 )
             }
         }

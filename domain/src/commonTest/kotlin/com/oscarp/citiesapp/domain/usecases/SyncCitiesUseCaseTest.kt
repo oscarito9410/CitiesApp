@@ -1,11 +1,11 @@
 package com.oscarp.citiesapp.domain.usecases
 
 import app.cash.turbine.test
+import com.oscarp.citiesapp.domain.models.CityDownload
 import com.oscarp.citiesapp.domain.repositories.CityRepository
 import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.mock
-import dev.mokkery.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -24,17 +24,35 @@ class SyncCitiesUseCaseTest {
     @Test
     fun `invoke emits start inserting items and completed in order`() = runTest(dispatcher) {
         // given
-        every { repository.syncCities() } returns flowOf(5, 10)
+        every { repository.syncCities() } returns flowOf(
+            CityDownload(
+                totalCities = 10,
+                totalInserted = 5
+            ),
+            CityDownload(
+                totalCities = 10,
+                totalInserted = 10
+            )
+        )
 
         // when & then
         useCase().test {
-            assertEquals(5, awaitItem())
-            assertEquals(10, awaitItem())
-            awaitComplete()
-        }
+            assertEquals(
+                5,
+                awaitItem().totalInserted
+            )
+            awaitItem().apply {
+                assertEquals(
+                    10,
+                    totalInserted
+                )
 
-        verify {
-            repository.syncCities()
+                assertEquals(
+                    10,
+                    totalCities
+                )
+            }
+            awaitComplete()
         }
     }
 
@@ -49,10 +67,6 @@ class SyncCitiesUseCaseTest {
         useCase().test {
             val resultError = awaitError()
             assertEquals("network error", resultError.message)
-        }
-
-        verify {
-            repository.syncCities()
         }
     }
 }

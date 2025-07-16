@@ -1,14 +1,15 @@
 package com.oscarp.citiesapp.synccities
 
 import com.oscarp.citiesapp.common.SharedViewModel
+import com.oscarp.citiesapp.domain.models.CityDownload
 import com.oscarp.citiesapp.domain.usecases.SyncCitiesUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SyncCitiesViewModel(
@@ -16,7 +17,7 @@ class SyncCitiesViewModel(
     private val ioDispatcher: CoroutineDispatcher,
 ) : SharedViewModel() {
 
-    private val _state = MutableStateFlow<SyncViewState>(SyncViewState.Idle)
+    private val _state = MutableStateFlow(SyncViewState())
     val state: StateFlow<SyncViewState> = _state
 
     fun processIntent(intent: SyncIntent) {
@@ -28,15 +29,50 @@ class SyncCitiesViewModel(
     private fun startSync() {
         viewModelScope.launch(ioDispatcher) {
             useCase()
-                .onStart { _state.value = SyncViewState.Loading }
-                .map {
-                    SyncViewState.Inserting(it)
+                .onStart {
+                    _state.update {
+                        it.copy(
+                            isLoading = true
+                        )
+                    }
                 }
-                .onCompletion { _state.value = SyncViewState.Completed }
-                .catch { e ->
-                    _state.value = SyncViewState.Error(e)
+                .catch { exception ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            isError = true,
+                            error = exception
+                        )
+                    }
                 }
-                .collect { _state.value = it }
+                .onCompletion {
+                    _state.update {
+                        it.copy(
+                            isCompleted = true,
+                            isLoading = false
+                        )
+                    }
+                }
+                .collect { response ->
+                    val percent = calculateProgress(response)
+                    _state.update {
+                        it.copy(
+                            isLoading = true,
+                            percentSync = percent
+                        )
+                    }
+                }
         }
+    }
+
+    private fun calculateProgress(response: CityDownload) = with(response) {
+        (totalInserted * PROGRESS_FACTOR / totalCities).coerceIn(
+            0,
+            PROGRESS_FACTOR
+        )
+    }
+
+    companion object {
+        private const val PROGRESS_FACTOR = 100
     }
 }

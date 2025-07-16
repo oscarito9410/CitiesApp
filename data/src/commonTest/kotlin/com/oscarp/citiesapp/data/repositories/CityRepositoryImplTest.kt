@@ -3,6 +3,7 @@ package com.oscarp.citiesapp.data.repositories
 import app.cash.turbine.test
 import com.oscarp.citiesapp.data.importers.CityDataImporter
 import com.oscarp.citiesapp.data.remote.CityApiService
+import com.oscarp.citiesapp.data.remote.CityDownloadDto
 import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.everySuspend
@@ -38,16 +39,28 @@ class CityRepositoryImplTest {
         // given
         everySuspend { api.fetchCitiesStream() } returns ByteReadChannel("[]".toByteArray())
         every { importer.seedFromStream(any(), any()) } returns flowOf(
-            5,
-            15,
-            20
+            CityDownloadDto(
+                totalCities = 20,
+                totalInserted = 5
+            ),
+            CityDownloadDto(
+                totalCities = 20,
+                totalInserted = 15
+            ),
+            CityDownloadDto(
+                totalCities = 20,
+                totalInserted = 20
+            )
         )
 
         // when & then
         repo.syncCities().test {
-            assertEquals(5, awaitItem())
-            assertEquals(15, awaitItem())
-            assertEquals(20, awaitItem())
+            assertEquals(5, awaitItem().totalInserted)
+            assertEquals(15, awaitItem().totalInserted)
+            awaitItem().apply {
+                assertEquals(20, totalInserted)
+                assertEquals(20, totalCities)
+            }
             awaitComplete()
         }
     }
