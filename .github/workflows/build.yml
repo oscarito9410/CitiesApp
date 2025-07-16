@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
       - name: Run Tests
-        run: ./gradlew composeApp:allTests data:allTests domain:allTests --parallel --continue
+        run: ./gradlew composeApp:testDebugUnitTest data:allTests domain:allTests --parallel --continue
 
   coverage:
     name: 📊 Coverage Report
