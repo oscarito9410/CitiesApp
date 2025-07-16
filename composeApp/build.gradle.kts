@@ -137,6 +137,7 @@ kover {
         filters {
             excludes {
                 androidGeneratedClasses()
+                annotatedBy("androidx.compose.ui.tooling.preview.Preview")
                 classes(
                     listOf(
                         "*di.*",
