@@ -1,10 +1,16 @@
 package com.oscarp.citiesapp.di
 
-import com.oscarp.citiesapp.synccities.SyncCitiesViewModel
+import com.oscarp.citiesapp.features.synccities.SyncCitiesViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 fun presentationModule(): Module = module {
-    singleOf(::SyncCitiesViewModel)
+    single<SyncCitiesViewModel> {
+        SyncCitiesViewModel(
+            get(),
+            Dispatchers.IO
+        )
+    }
 }

@@ -34,11 +34,13 @@ kotlin {
             dependencies {
                 implementation(project(":domain"))
                 implementation(libs.kotlin.stdlib)
+                implementation(project.dependencies.platform(libs.koin.bom))
                 api(libs.koin.core)
                 implementation(libs.coroutines.core)
 
                 api(libs.ktor.core)
                 implementation(libs.ktor.contentNegotiation)
+                implementation(libs.ktor.encoding)
                 implementation(libs.ktor.json)
                 implementation(libs.ktor.logging)
 
@@ -76,12 +78,14 @@ kotlin {
                 implementation(libs.room.ktx)
                 implementation(libs.ktor.android)
                 implementation(libs.ktor.okhttp)
+                implementation(libs.ktor.encoding)
             }
         }
 
         iosMain {
             dependencies {
                 implementation(libs.ktor.darwin)
+                implementation(libs.ktor.encoding)
             }
         }
     }

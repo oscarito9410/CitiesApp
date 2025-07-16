@@ -32,6 +32,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
+                implementation(project.dependencies.platform(libs.koin.bom))
                 api(libs.koin.core)
                 implementation(libs.coroutines.core)
                 implementation(libs.kermit)

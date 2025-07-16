@@ -2,8 +2,8 @@ package com.oscarp.citiesapp.data.repositories
 
 import co.touchlab.kermit.Logger
 import com.oscarp.citiesapp.data.importers.CityDataImporter
-import com.oscarp.citiesapp.data.importers.TotalInserted
 import com.oscarp.citiesapp.data.remote.CityApiService
+import com.oscarp.citiesapp.domain.models.CityDownload
 import com.oscarp.citiesapp.domain.repositories.CityRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -18,10 +18,10 @@ class CityRepositoryImpl(
 ) : CityRepository {
 
     companion object {
-        const val CHUNK_SIZE = 10000
+        const val CHUNK_SIZE = 20000
     }
 
-    override fun syncCities(): Flow<TotalInserted> = flow {
+    override fun syncCities(): Flow<CityDownload> = flow {
         val channel = api.fetchCitiesStream()
         importer.seedFromStream(channel, CHUNK_SIZE)
             .catch {
@@ -29,7 +29,12 @@ class CityRepositoryImpl(
                 throw it
             }
             .collect {
-                emit(it)
+                emit(
+                    CityDownload(
+                        it.totalCities,
+                        it.totalInserted
+                    )
+                )
             }
     }.flowOn(ioDispatcher)
 }

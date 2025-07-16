@@ -1,5 +1,6 @@
-package com.oscarp.citiesapp.synccities
+package com.oscarp.citiesapp.features.synccities
 
+import com.oscarp.citiesapp.domain.models.CityDownload
 import com.oscarp.citiesapp.domain.usecases.SyncCitiesUseCase
 import dev.mokkery.answering.returns
 import dev.mokkery.every
@@ -24,14 +25,12 @@ class SyncCitiesViewModelTest {
 
     private val dispatcher = UnconfinedTestDispatcher()
     private val useCase: SyncCitiesUseCase = mock()
-    private val viewModel = SyncCitiesViewModel(
-        useCase,
-        dispatcher
-    )
+    private lateinit var viewModel: SyncCitiesViewModel
 
     @BeforeTest
     fun setupMainDispatcher() {
         Dispatchers.setMain(dispatcher)
+        viewModel = SyncCitiesViewModel(useCase, dispatcher)
     }
 
     @AfterTest
@@ -40,22 +39,37 @@ class SyncCitiesViewModelTest {
     }
 
     @Test
-    fun `processIntent StartSync emits Loading Inserting and Completed in order`() =
+    fun `processIntent startSync emits loading  progress updates and completed state`() =
         runTest(dispatcher) {
-            // stub the use case to emit 5 then 10
-            every { useCase() } returns flowOf(5, 10)
+            // given
+            val flow = flowOf(
+                CityDownload(
+                    totalCities = 200,
+                    totalInserted = 50
+                ),
+                CityDownload(
+                    totalCities = 200,
+                    totalInserted = 100
+                ),
+                CityDownload(
+                    totalCities = 200,
+                    totalInserted = 200
+                )
+            )
+            every { useCase() } returns flow
 
-            assertEquals(SyncViewState.Idle, viewModel.state.value)
-
+            // when
             viewModel.processIntent(SyncIntent.StartSync)
             advanceUntilIdle()
 
+            // then
             val state = viewModel.state.value
-            assertEquals(SyncViewState.Completed, state)
+            assertEquals(true, state.isCompleted)
+            assertEquals(100, state.percentSync)
         }
 
     @Test
-    fun `processIntent StartSync on error emits Idle Loading Completed and Error state`() =
+    fun `processIntent StartSync emits error state on failure`() =
         runTest(dispatcher) {
             // given
             val ex = IllegalStateException("network down")
@@ -66,8 +80,8 @@ class SyncCitiesViewModelTest {
             advanceUntilIdle()
 
             // then
-            val errorState = viewModel.state.value
-            assertTrue(errorState is SyncViewState.Error)
-            assertEquals("network down", errorState.error.message)
+            val state = viewModel.state.value
+            assertTrue(state.isError)
+            assertEquals("network down", state.error?.message)
         }
 }

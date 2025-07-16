@@ -17,11 +17,8 @@ kotlin = "2.2.0"
 kotlinStdlib = "2.2.0"
 runner = "1.6.2"
 core = "1.6.1"
-koinCompose = "4.1.0"
-koinAndroid = "4.1.0"
-koinAndroidxCompose = "4.1.0"
 koinCore = "4.1.0"
-mockk = "1.13.8"
+mockk = "1.14.4"
 turbine = "1.2.1"
 coroutines = "1.10.2"
 room = "2.7.2"
@@ -30,15 +27,21 @@ ktor = "3.2.1"
 detekt = "1.23.8"
 sqlite = "2.5.2"
 material = "1.12.0"
-kermit = "2.0.4"
+kermit = "2.0.6"
+compottie="2.0.0-rc04"
+
 
 [libraries]
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detektFormatting" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
-koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinCompose" }
+# koin
+koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koinCore" }
+koin-android = { group = "io.insert-koin", name = "koin-android" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose" }
+koin-core = { group = "io.insert-koin", name = "koin-core" }
+koin-compose = { group = "io.insert-koin", name = "koin-compose" }
+koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel" }
+
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
@@ -61,6 +64,7 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 kotlinX-serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 ktor-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-encoding = {  module = "io.ktor:ktor-client-encoding", version.ref = "ktor" }
 ktor-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
@@ -71,6 +75,11 @@ material = { group = "com.google.android.material", name = "material", version.r
 ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+
+compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
+compottie-dot = { module = "io.github.alexzhirkevich:compottie-dot", version.ref = "compottie" }
+compottie-network = { module = "io.github.alexzhirkevich:compottie-network", version.ref = "compottie" }
+compottie-resources = { module = "io.github.alexzhirkevich:compottie-resources", version.ref = "compottie" }
 
 
 [plugins]
