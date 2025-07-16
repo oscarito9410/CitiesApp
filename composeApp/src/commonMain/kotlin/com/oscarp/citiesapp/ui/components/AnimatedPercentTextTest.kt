@@ -24,7 +24,7 @@ fun AnimatedPercentText(percent: Int) {
         label = "PercentChange",
         transitionSpec = {
             fadeIn(tween(AnimationDurationMillis)) togetherWith
-                    fadeOut(tween(AnimationDurationMillis))
+                fadeOut(tween(AnimationDurationMillis))
         }
     ) { value ->
         Text(

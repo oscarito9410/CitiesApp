@@ -1,7 +1,6 @@
 package com.oscarp.citiesapp.data.importers
 
 import app.cash.turbine.test
-import com.oscarp.citiesapp.data.importers.CityDataImporterImpl
 import com.oscarp.citiesapp.data.local.dao.CityDao
 import com.oscarp.citiesapp.data.mappers.mapEntity
 import com.oscarp.citiesapp.data.remote.CityDto
