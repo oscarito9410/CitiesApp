@@ -1,7 +1,9 @@
-package com.oscarp.citiesapp.synccities
+package com.oscarp.citiesapp.features.synccities
 
 import com.oscarp.citiesapp.domain.models.CityDownload
 import com.oscarp.citiesapp.domain.usecases.SyncCitiesUseCase
+import com.oscarp.citiesapp.features.synccities.SyncCitiesViewModel
+import com.oscarp.citiesapp.features.synccities.SyncIntent
 import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.mock
@@ -39,7 +41,7 @@ class SyncCitiesViewModelTest {
     }
 
     @Test
-    fun `processIntent StartSync emits loading, progress updates and completed state`() =
+    fun `processIntent startSync emits loading  progress updates and completed state`() =
         runTest(dispatcher) {
             // given
             val flow = flowOf(

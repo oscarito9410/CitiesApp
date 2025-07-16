@@ -1,8 +1,8 @@
 package com.oscarp.citiesapp
 
 import androidx.compose.runtime.Composable
-import com.oscarp.citiesapp.synccities.SyncScreen
-import com.oscarp.citiesapp.theme.AppTheme
+import com.oscarp.citiesapp.features.synccities.SyncScreen
+import com.oscarp.citiesapp.ui.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable

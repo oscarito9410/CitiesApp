@@ -1,4 +1,4 @@
-package com.oscarp.citiesapp.synccities
+package com.oscarp.citiesapp.features.synccities
 
 import com.oscarp.citiesapp.common.SharedViewModel
 import com.oscarp.citiesapp.domain.models.CityDownload

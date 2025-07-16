@@ -1,4 +1,4 @@
-package com.oscarp.citiesapp.theme
+package com.oscarp.citiesapp.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

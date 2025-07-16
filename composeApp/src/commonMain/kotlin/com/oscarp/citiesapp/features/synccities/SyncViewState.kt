@@ -1,7 +1,7 @@
-package com.oscarp.citiesapp.synccities
+package com.oscarp.citiesapp.features.synccities
 
 /**
- * Represents the progress states emitted by SyncCitiesUseCase.
+ * represents the progress states emitted.
  */
 data class SyncViewState(
     val isLoading: Boolean = false,

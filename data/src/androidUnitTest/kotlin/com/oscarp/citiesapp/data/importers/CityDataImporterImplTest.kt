@@ -1,4 +1,4 @@
-package com.importers
+package com.oscarp.citiesapp.data.importers
 
 import app.cash.turbine.test
 import com.oscarp.citiesapp.data.importers.CityDataImporterImpl

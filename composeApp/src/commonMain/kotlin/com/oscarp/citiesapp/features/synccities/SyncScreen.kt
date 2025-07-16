@@ -1,4 +1,4 @@
-package com.oscarp.citiesapp.synccities
+package com.oscarp.citiesapp.features.synccities
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +23,7 @@ import citiesapp.composeapp.generated.resources.text_sync_completed
 import citiesapp.composeapp.generated.resources.text_sync_getting_cities
 import citiesapp.composeapp.generated.resources.text_sync_retry
 import citiesapp.composeapp.generated.resources.text_sync_saving_cities
-import com.oscarp.citiesapp.components.AnimatedPercentText
+import com.oscarp.citiesapp.ui.components.AnimatedPercentText
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition

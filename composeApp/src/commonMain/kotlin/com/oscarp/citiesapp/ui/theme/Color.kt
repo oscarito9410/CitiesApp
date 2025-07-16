@@ -1,4 +1,4 @@
-package com.oscarp.citiesapp.theme
+package com.oscarp.citiesapp.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF415F91)
