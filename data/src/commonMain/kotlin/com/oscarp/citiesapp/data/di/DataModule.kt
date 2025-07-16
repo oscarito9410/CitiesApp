@@ -7,11 +7,11 @@ import com.oscarp.citiesapp.data.remote.CityApiService
 import com.oscarp.citiesapp.data.remote.CityApiServiceImpl
 import com.oscarp.citiesapp.data.remote.KtorHttpClientProvider
 import com.oscarp.citiesapp.data.repositories.CityRepositoryImpl
+import com.oscarp.citiesapp.domain.di.DispatchersQualifier
 import com.oscarp.citiesapp.domain.repositories.CityRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 fun dataModule(): Module = module {
@@ -35,7 +35,11 @@ fun dataModule(): Module = module {
         CityRepositoryImpl(
             api = get<CityApiService>(),
             importer = get<CityDataImporter>(),
-            ioDispatcher = Dispatchers.IO
+            ioDispatcher = get(
+                named(
+                    DispatchersQualifier.IO
+                )
+            )
         )
     }
 }
