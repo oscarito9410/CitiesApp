@@ -1,9 +1,11 @@
 package com.oscarp.citiesapp.features.synccities
 
 import com.oscarp.citiesapp.domain.models.CityDownload
+import com.oscarp.citiesapp.domain.usecases.HasSyncCitiesUseCase
 import com.oscarp.citiesapp.domain.usecases.SyncCitiesUseCase
 import dev.mokkery.answering.returns
 import dev.mokkery.every
+import dev.mokkery.everySuspend
 import dev.mokkery.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,13 +26,18 @@ import kotlin.test.assertTrue
 class SyncCitiesViewModelTest {
 
     private val dispatcher = UnconfinedTestDispatcher()
-    private val useCase: SyncCitiesUseCase = mock()
+    private val syncCitiesUseCase: SyncCitiesUseCase = mock()
+    private val hasSyncCitiesUseCase: HasSyncCitiesUseCase = mock()
     private lateinit var viewModel: SyncCitiesViewModel
 
     @BeforeTest
     fun setupMainDispatcher() {
         Dispatchers.setMain(dispatcher)
-        viewModel = SyncCitiesViewModel(useCase, dispatcher)
+        viewModel = SyncCitiesViewModel(
+            syncCitiesUseCase,
+            hasSyncCitiesUseCase,
+            dispatcher
+        )
     }
 
     @AfterTest
@@ -56,7 +63,7 @@ class SyncCitiesViewModelTest {
                     totalInserted = 200
                 )
             )
-            every { useCase() } returns flow
+            every { syncCitiesUseCase() } returns flow
 
             // when
             viewModel.processIntent(SyncIntent.StartSync)
@@ -73,7 +80,7 @@ class SyncCitiesViewModelTest {
         runTest(dispatcher) {
             // given
             val ex = IllegalStateException("network down")
-            every { useCase() } returns flow { throw ex }
+            every { syncCitiesUseCase() } returns flow { throw ex }
 
             // when
             viewModel.processIntent(SyncIntent.StartSync)
@@ -84,4 +91,40 @@ class SyncCitiesViewModelTest {
             assertTrue(state.isError)
             assertEquals("network down", state.error?.message)
         }
+
+    @Test
+    fun `processIntent VerifyLoadSync sets isCompleted true when cities already synced`() = runTest(dispatcher) {
+        // given
+        everySuspend { hasSyncCitiesUseCase() } returns true
+
+        // when
+        viewModel.processIntent(SyncIntent.VerifyLoadSync)
+        advanceUntilIdle()
+
+        // then
+        val state = viewModel.state.value
+        assertTrue(state.isCompleted)
+        assertEquals(false, state.isLoading)
+    }
+
+    @Test
+    fun `processIntent VerifyLoadSync triggers StartSync when no cities are synced`() = runTest(dispatcher) {
+        // given
+        everySuspend { hasSyncCitiesUseCase() } returns false
+        every { syncCitiesUseCase() } returns flowOf(
+            CityDownload(
+                totalCities = 100,
+                totalInserted = 100
+            )
+        )
+
+        // when
+        viewModel.processIntent(SyncIntent.VerifyLoadSync)
+        advanceUntilIdle()
+
+        // then
+        val state = viewModel.state.value
+        assertTrue(state.isCompleted)
+        assertEquals(100, state.percentSync)
+    }
 }

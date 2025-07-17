@@ -81,7 +81,7 @@ compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "comp
 compottie-dot = { module = "io.github.alexzhirkevich:compottie-dot", version.ref = "compottie" }
 compottie-resources = { module = "io.github.alexzhirkevich:compottie-resources", version.ref = "compottie" }
 
-navigation-compose = { group = "org.jetbrains.androidx.navigation:navigation-compose", name = "navigation-compose", version.ref = "navigation-compose" }
+navigationComposeMultiplatform = { group = "org.jetbrains.androidx.navigation:navigation-compose", name = "navigation-compose", version.ref = "navigation-compose" }
 
 
 [plugins]
