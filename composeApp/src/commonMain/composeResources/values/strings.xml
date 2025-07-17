@@ -3,5 +3,5 @@
     <string name="text_sync_saving_cities">Guardando ciudades...</string>
     <string name="text_error_sync_cities">Ha ocurrido un error al sincronizar con el servidor.</string>
     <string name="text_sync_retry">Reintentar</string>
-    <string name="text_sync_completed">Sincronización completada!</string>
+    <string name="text_sync_completed">Sincronización completada! \n Bienvenido!</string>
 </resources>

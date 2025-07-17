@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.runComposeUiTest
+import com.oscarp.citiesapp.testutil.RobolectricComposeTest
 import com.oscarp.citiesapp.ui.components.AnimatedPercentText
 import com.oscarp.citiesapp.ui.components.PercentTextTag
 import kotlin.test.Test

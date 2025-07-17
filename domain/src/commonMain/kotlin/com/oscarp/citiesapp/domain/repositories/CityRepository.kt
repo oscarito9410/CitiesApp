@@ -5,8 +5,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface CityRepository {
     /**
-     * Syncs city data (network → DB) in the background and
+     * syncs city data (network → DB) in the background and
      * emits the total inserted so far.
      */
     fun syncCities(): Flow<CityDownload>
+
+    suspend fun hasSyncCities(): Boolean
 }

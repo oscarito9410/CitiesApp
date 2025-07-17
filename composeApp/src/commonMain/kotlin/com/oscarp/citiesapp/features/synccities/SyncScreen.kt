@@ -17,13 +17,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import citiesapp.composeapp.generated.resources.Res
 import citiesapp.composeapp.generated.resources.text_error_sync_cities
 import citiesapp.composeapp.generated.resources.text_sync_completed
 import citiesapp.composeapp.generated.resources.text_sync_getting_cities
 import citiesapp.composeapp.generated.resources.text_sync_retry
 import citiesapp.composeapp.generated.resources.text_sync_saving_cities
+import com.oscarp.citiesapp.navigation.CitiesDestination
+import com.oscarp.citiesapp.navigation.SyncCitiesDestination
 import com.oscarp.citiesapp.ui.components.AnimatedPercentText
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
@@ -38,12 +42,24 @@ const val TagNotInternet = "NoInternetContent"
 const val TagCompleted = "CompletedContent"
 
 @Composable
-fun SyncScreen(viewModel: SyncCitiesViewModel = koinInject()) {
+fun SyncScreen(
+    navController: NavController,
+    viewModel: SyncCitiesViewModel = koinInject()
+) {
     val viewState by viewModel.state.collectAsState()
+
+    LaunchedEffect(viewState.isCompleted) {
+        if (viewState.isCompleted) {
+            navController.navigate(CitiesDestination) {
+                popUpTo(SyncCitiesDestination) { inclusive = true }
+            }
+        }
+    }
+
     SyncContent(
         state = viewState,
         onLoad = {
-            viewModel.processIntent(SyncIntent.StartSync)
+            viewModel.processIntent(SyncIntent.VerifyLoadSync)
         },
         onRetry = {
             viewModel.processIntent(SyncIntent.StartSync)
@@ -142,7 +158,9 @@ private fun CompletedContent() {
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             stringResource(Res.string.text_sync_completed),
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold
+            )
         )
     }
 }

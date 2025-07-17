@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.kover)
     alias(libs.plugins.mokkery)
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 kotlin {
@@ -53,6 +54,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.navigationComposeMultiplatform)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(project.dependencies.platform(libs.koin.bom))
@@ -152,7 +154,7 @@ kover {
                         "com.oscarp.citiesapp.data.remote.CityApiService",
                         "com.oscarp.citiesapp.data.remote.CityApiServiceImpl*",
                         "com.oscarp.citiesapp.ui.theme.*",
-                        "com.oscarp.citiesapp.App"
+                        "com.oscarp.citiesapp.App*"
                     )
                 )
             }

@@ -2,6 +2,7 @@ package com.oscarp.citiesapp.features.synccities
 
 import com.oscarp.citiesapp.common.SharedViewModel
 import com.oscarp.citiesapp.domain.models.CityDownload
+import com.oscarp.citiesapp.domain.usecases.HasSyncCitiesUseCase
 import com.oscarp.citiesapp.domain.usecases.SyncCitiesUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SyncCitiesViewModel(
-    private val useCase: SyncCitiesUseCase,
+    private val syncCitiesUseCase: SyncCitiesUseCase,
+    private val hasSyncCitiesUseCase: HasSyncCitiesUseCase,
     private val ioDispatcher: CoroutineDispatcher,
 ) : SharedViewModel() {
 
@@ -23,12 +25,25 @@ class SyncCitiesViewModel(
     fun processIntent(intent: SyncIntent) {
         when (intent) {
             SyncIntent.StartSync -> startSync()
+            SyncIntent.VerifyLoadSync -> verifyLoadSync()
+        }
+    }
+
+    private fun verifyLoadSync() {
+        viewModelScope.launch(ioDispatcher) {
+            if (hasSyncCitiesUseCase()) {
+                _state.update {
+                    it.copy(isCompleted = true)
+                }
+            } else {
+                startSync()
+            }
         }
     }
 
     private fun startSync() {
         viewModelScope.launch(ioDispatcher) {
-            useCase()
+            syncCitiesUseCase()
                 .onStart {
                     _state.update {
                         it.copy(

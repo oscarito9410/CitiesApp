@@ -2,6 +2,7 @@ package com.oscarp.citiesapp.data.repositories
 
 import co.touchlab.kermit.Logger
 import com.oscarp.citiesapp.data.importers.CityDataImporter
+import com.oscarp.citiesapp.data.local.dao.CityDao
 import com.oscarp.citiesapp.data.remote.CityApiService
 import com.oscarp.citiesapp.domain.models.CityDownload
 import com.oscarp.citiesapp.domain.repositories.CityRepository
@@ -14,12 +15,15 @@ import kotlinx.coroutines.flow.flowOn
 class CityRepositoryImpl(
     private val api: CityApiService,
     private val importer: CityDataImporter,
+    private val cityDao: CityDao,
     private val ioDispatcher: CoroutineDispatcher
 ) : CityRepository {
 
     companion object {
         const val CHUNK_SIZE = 20000
     }
+
+    override suspend fun hasSyncCities(): Boolean = cityDao.getCitiesCount() > 0
 
     override fun syncCities(): Flow<CityDownload> = flow {
         val channel = api.fetchCitiesStream()

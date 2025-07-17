@@ -2,6 +2,7 @@ package com.oscarp.citiesapp.data.repositories
 
 import app.cash.turbine.test
 import com.oscarp.citiesapp.data.importers.CityDataImporter
+import com.oscarp.citiesapp.data.local.dao.CityDao
 import com.oscarp.citiesapp.data.remote.CityApiService
 import com.oscarp.citiesapp.data.remote.CityDownloadDto
 import dev.mokkery.answering.returns
@@ -18,6 +19,8 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class CityRepositoryImplTest {
 
@@ -27,10 +30,12 @@ class CityRepositoryImplTest {
     // mocks
     private val api: CityApiService = mock()
     private val importer: CityDataImporter = mock()
+    private val cityDao: CityDao = mock()
 
     private val repo = CityRepositoryImpl(
         api = api,
         importer = importer,
+        cityDao = cityDao,
         ioDispatcher = dispatcher
     )
 
@@ -70,15 +75,36 @@ class CityRepositoryImplTest {
         // given
         everySuspend { api.fetchCitiesStream() } returns ByteReadChannel("[]".toByteArray())
 
-        // when
         every { importer.seedFromStream(any(), any()) } returns flow {
             throw IllegalStateException("network error")
         }
 
-        // then
+        // when & then
         repo.syncCities().test {
             val resultError = awaitError()
             assertEquals("network error", resultError.message)
         }
+    }
+
+    @Test
+    fun `hasSyncCities returns true when getCityCount is higher than 0`() = runTest(dispatcher) {
+        // given
+        everySuspend { cityDao.getCitiesCount() } returns 100
+
+        // when
+        val hasSyncCities = repo.hasSyncCities()
+
+        assertTrue(hasSyncCities)
+    }
+
+    @Test
+    fun `hasSyncCities returns true when getCityCount is 0`() = runTest(dispatcher) {
+        // given
+        everySuspend { cityDao.getCitiesCount() } returns 0
+
+        // when
+        val hasSyncCities = repo.hasSyncCities()
+
+        assertFalse(hasSyncCities)
     }
 }
