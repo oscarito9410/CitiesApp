@@ -10,6 +10,7 @@ import com.oscarp.citiesapp.features.synccities.SyncViewState
 import com.oscarp.citiesapp.features.synccities.TagCompleted
 import com.oscarp.citiesapp.features.synccities.TagLoading
 import com.oscarp.citiesapp.features.synccities.TagNotInternet
+import com.oscarp.citiesapp.testutil.RobolectricComposeTest
 import com.oscarp.citiesapp.ui.components.PercentTextTag
 import kotlin.test.Test
 

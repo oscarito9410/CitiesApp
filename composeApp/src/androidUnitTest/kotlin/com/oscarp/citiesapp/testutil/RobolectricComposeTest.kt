@@ -1,10 +1,10 @@
-package com.oscarp.citiesapp.ui
+package com.oscarp.citiesapp.testutil
 
 import android.content.ContentProvider
 import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith
-import org.koin.core.context.GlobalContext.stopKoin
+import org.koin.core.context.GlobalContext
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -23,7 +23,7 @@ abstract class RobolectricComposeTest {
 
     @After
     fun after() {
-        stopKoin()
+        GlobalContext.stopKoin()
     }
 
     // Configures Compose's AndroidContextProvider to access resources in tests.
