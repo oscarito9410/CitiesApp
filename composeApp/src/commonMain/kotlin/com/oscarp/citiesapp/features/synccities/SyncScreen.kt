@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import citiesapp.composeapp.generated.resources.Res
@@ -157,7 +158,9 @@ private fun CompletedContent() {
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             stringResource(Res.string.text_sync_completed),
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold
+            )
         )
     }
 }
