@@ -154,7 +154,7 @@ kover {
                         "com.oscarp.citiesapp.data.remote.CityApiService",
                         "com.oscarp.citiesapp.data.remote.CityApiServiceImpl*",
                         "com.oscarp.citiesapp.ui.theme.*",
-                        "com.oscarp.citiesapp.App"
+                        "com.oscarp.citiesapp.App*"
                     )
                 )
             }
