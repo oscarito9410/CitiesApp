@@ -1,6 +1,7 @@
 package com.oscarp.citiesapp.data.di
 
 import com.oscarp.citiesapp.data.importers.CityDataImporter
+import com.oscarp.citiesapp.data.local.dao.CityDao
 import com.oscarp.citiesapp.data.local.getCityDao
 import com.oscarp.citiesapp.data.local.getRoomDatabase
 import com.oscarp.citiesapp.data.remote.CityApiService
@@ -35,6 +36,7 @@ fun dataModule(): Module = module {
         CityRepositoryImpl(
             api = get<CityApiService>(),
             importer = get<CityDataImporter>(),
+            cityDao = get<CityDao>(),
             ioDispatcher = get(
                 named(
                     DispatchersQualifier.IO

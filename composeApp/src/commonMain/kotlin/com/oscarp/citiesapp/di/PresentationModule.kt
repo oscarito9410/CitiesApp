@@ -10,6 +10,7 @@ fun presentationModule(): Module = module {
     single<SyncCitiesViewModel> {
         SyncCitiesViewModel(
             get(),
+            get(),
             get(
                 named(
                     DispatchersQualifier.IO

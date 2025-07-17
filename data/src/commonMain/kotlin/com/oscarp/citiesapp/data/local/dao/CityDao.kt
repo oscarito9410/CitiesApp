@@ -10,8 +10,8 @@ import com.oscarp.citiesapp.data.local.entities.CityEntity
 @Dao
 interface CityDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCity(city: CityEntity)
+    @Query("SELECT COUNT(id) FROM cities")
+    suspend fun getCitiesCount(): Int
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
