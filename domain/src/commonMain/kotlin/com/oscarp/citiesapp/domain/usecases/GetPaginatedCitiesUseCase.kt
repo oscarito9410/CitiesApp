@@ -9,11 +9,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 
-class GetPaginatedCitiesUseCase(
+open class GetPaginatedCitiesUseCase(
     private val factory: CitiesPagingSourceFactory,
     private val ioDispatcher: CoroutineDispatcher
 ) {
-    operator fun invoke(
+    open operator fun invoke(
         searchQuery: String,
         onlyFavorites: Boolean
     ): Flow<PagingData<City>> {
