@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import citiesapp.composeapp.generated.resources.Res
 import citiesapp.composeapp.generated.resources.clear_search
@@ -29,6 +30,11 @@ import citiesapp.composeapp.generated.resources.search_placeholder
 import citiesapp.composeapp.generated.resources.show_only_favorites
 import com.oscarp.citiesapp.ui.theme.Dimens
 import org.jetbrains.compose.resources.stringResource
+
+const val SearchTextFieldTag = "SearchTextFieldTag"
+const val ClearSearchButtonTag = "ClearSearchButtonTag"
+const val SearchFavoritesSwitchTag = "SearchFavoritesSwitchTag"
+const val SearchFavoritesLabelTag = "SearchFavoritesLabelTag"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +59,10 @@ fun SearchFilterBar(
             },
             trailingIcon = {
                 if (searchQuery.isNotEmpty()) {
-                    IconButton(onClick = { onSearchQueryChanged("") }) {
+                    IconButton(
+                        onClick = { onSearchQueryChanged("") },
+                        modifier = Modifier.testTag(ClearSearchButtonTag)
+                    ) {
                         Icon(
                             Icons.Default.Clear,
                             contentDescription = stringResource(Res.string.clear_search)
@@ -62,7 +71,9 @@ fun SearchFilterBar(
                 }
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(SearchTextFieldTag)
         )
 
         Spacer(modifier = Modifier.height(Dimens.spacingSmall))
@@ -74,11 +85,13 @@ fun SearchFilterBar(
         ) {
             Text(
                 text = stringResource(Res.string.show_only_favorites),
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.testTag(SearchFavoritesLabelTag)
             )
             Switch(
                 checked = showOnlyFavorites,
-                onCheckedChange = { onToggleFavoritesFilter() }
+                onCheckedChange = { onToggleFavoritesFilter() },
+                modifier = Modifier.testTag(SearchFavoritesSwitchTag)
             )
         }
     }
