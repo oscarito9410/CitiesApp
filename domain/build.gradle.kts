@@ -42,7 +42,7 @@ kotlin {
             }
         }
 
-        commonTest {
+        androidUnitTest {
             dependencies {
                 implementation(libs.kotlin.test)
                 implementation(libs.turbine)
