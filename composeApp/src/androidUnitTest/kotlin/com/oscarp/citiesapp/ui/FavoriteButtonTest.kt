@@ -1,8 +1,10 @@
 package com.oscarp.citiesapp.ui
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
@@ -13,6 +15,9 @@ import com.oscarp.citiesapp.ui.components.FavoriteButtonTag
 import com.oscarp.citiesapp.ui.theme.AppTheme
 import kotlin.test.Test
 import kotlin.test.assertTrue
+
+private const val AddFavoritesText = "Agregar a favoritos"
+private const val RemoveFromFavoritesText = "Quitar de favoritos"
 
 @OptIn(ExperimentalTestApi::class)
 class FavoriteButtonTest : RobolectricComposeTest() {
@@ -42,6 +47,9 @@ class FavoriteButtonTest : RobolectricComposeTest() {
         // then
         onNodeWithTag(FavoriteButtonTag)
             .assertIsDisplayed()
+
+        onNodeWithContentDescription(RemoveFromFavoritesText)
+            .assertIsDisplayed()
     }
 
     @Test
@@ -59,6 +67,8 @@ class FavoriteButtonTest : RobolectricComposeTest() {
 
         // then
         onNodeWithTag(FavoriteButtonTag)
+            .assertIsDisplayed()
+        onNodeWithContentDescription(AddFavoritesText)
             .assertIsDisplayed()
     }
 
@@ -79,6 +89,9 @@ class FavoriteButtonTest : RobolectricComposeTest() {
 
         // when
         onNodeWithTag(FavoriteButtonTag).performClick()
+
+        onNodeWithContentDescription(RemoveFromFavoritesText)
+            .assertIsDisplayed()
 
         // then
         assertTrue(toggled)
