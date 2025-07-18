@@ -134,6 +134,7 @@ dependencies {
 
 
 kover {
+    useJacoco()
     currentProject {
         createVariant("coverage") {
             addWithDependencies("debug")

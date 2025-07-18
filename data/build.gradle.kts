@@ -122,6 +122,7 @@ room {
 }
 
 kover {
+    useJacoco()
     currentProject {
         createVariant("coverage") {
             addWithDependencies("debug")
