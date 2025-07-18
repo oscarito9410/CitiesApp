@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.oscarp.citiesapp.features.cities.CitiesScreen
 import com.oscarp.citiesapp.features.synccities.SyncScreen
 import kotlinx.serialization.Serializable
 
@@ -30,6 +31,7 @@ fun AppNavigation(
 
         // Cities screen
         composable<CitiesDestination> {
+            CitiesScreen()
         }
     }
 }

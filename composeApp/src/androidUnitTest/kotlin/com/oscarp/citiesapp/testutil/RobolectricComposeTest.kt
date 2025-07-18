@@ -17,12 +17,12 @@ import org.robolectric.annotation.Config
 abstract class RobolectricComposeTest {
 
     @Before
-    fun setup() {
+    open fun setup() {
         setupAndroidContextProvider()
     }
 
     @After
-    fun after() {
+    open fun after() {
         GlobalContext.stopKoin()
     }
 

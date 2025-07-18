@@ -19,12 +19,33 @@ interface CityDao {
 
     @Query(
         """
-  SELECT c.* 
-  FROM cities AS c
-  JOIN cities_fts AS fts ON c.id = fts.rowid
-  WHERE cities_fts MATCH 'name:' || :query || '* OR country:' || :query || '*'
-  ORDER BY c.name
-"""
+        SELECT * FROM cities
+        WHERE (:onlyFavorites = 0 OR isFavorite = 1)
+        ORDER BY name
+        LIMIT :loadSize OFFSET :offset
+    """
     )
-    suspend fun searchCitiesExplicit(query: String): List<CityEntity>
+    suspend fun getPaginatedCitiesNoSearch(
+        onlyFavorites: Boolean,
+        loadSize: Int,
+        offset: Int
+    ): List<CityEntity>
+
+    @Query(
+        """
+        SELECT c.* 
+        FROM cities AS c
+        JOIN cities_fts AS fts ON c.id = fts.rowid
+        WHERE (:onlyFavorites = 0 OR c.isFavorite = 1)
+          AND cities_fts MATCH 'name:' || :query || '* OR country:' || :query || '*'
+        ORDER BY c.name
+        LIMIT :loadSize OFFSET :offset
+    """
+    )
+    suspend fun getPaginatedCitiesWithSearch(
+        query: String,
+        onlyFavorites: Boolean,
+        loadSize: Int,
+        offset: Int
+    ): List<CityEntity>
 }

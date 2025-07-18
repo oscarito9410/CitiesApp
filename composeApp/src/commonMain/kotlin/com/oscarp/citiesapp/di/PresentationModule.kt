@@ -1,6 +1,7 @@
 package com.oscarp.citiesapp.di
 
 import com.oscarp.citiesapp.domain.di.DispatchersQualifier
+import com.oscarp.citiesapp.features.cities.CitiesViewModel
 import com.oscarp.citiesapp.features.synccities.SyncCitiesViewModel
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
@@ -16,6 +17,12 @@ fun presentationModule(): Module = module {
                     DispatchersQualifier.IO
                 )
             )
+        )
+    }
+
+    single<CitiesViewModel> {
+        CitiesViewModel(
+            get()
         )
     }
 }

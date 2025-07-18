@@ -18,6 +18,7 @@ kotlin {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
+
     }
     iosX64()
     iosArm64()
@@ -36,6 +37,17 @@ kotlin {
                 api(libs.koin.core)
                 implementation(libs.coroutines.core)
                 implementation(libs.kermit)
+                implementation(libs.paging.common)
+                implementation(libs.paging.compose.common)
+            }
+        }
+
+        androidUnitTest {
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.turbine)
+                implementation(libs.coroutines.test)
+                implementation(libs.mockk)
             }
         }
 
@@ -74,6 +86,12 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+            isIncludeAndroidResources = true
+        }
     }
 }
 

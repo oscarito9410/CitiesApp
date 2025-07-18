@@ -22,8 +22,8 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
         dependencies {
-            androidTestImplementation("androidx.compose.ui:ui-test-junit4-android:1.8.2")
-            debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
+            androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+            debugImplementation(libs.androidx.compose.ui.test.manifest)
         }
     }
 
@@ -52,9 +52,11 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
+            implementation(compose.materialIconsExtended)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.navigationComposeMultiplatform)
+            implementation("org.jetbrains.compose.material3.adaptive:adaptive:1.1.2")
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(project.dependencies.platform(libs.koin.bom))
@@ -65,14 +67,19 @@ kotlin {
             implementation(libs.compottie.dot)
             implementation(libs.compottie.resources)
             implementation(libs.kermit)
+
+            implementation(libs.paging.common)
+            implementation(libs.paging.compose.common)
+            
             implementation(project(":data"))
             implementation(project(":domain"))
         }
 
         androidUnitTest.dependencies {
             implementation(libs.kotlin.test)
-            implementation("androidx.compose.ui:ui-test-junit4:1.8.2")
-            implementation("org.robolectric:robolectric:4.11.1")
+            implementation(libs.robolectric)
+            implementation(libs.androidx.compose.ui.test.junit4)
+            implementation(libs.mockk)
         }
 
         commonTest.dependencies {
@@ -128,6 +135,7 @@ dependencies {
 
 
 kover {
+    useJacoco()
     currentProject {
         createVariant("coverage") {
             addWithDependencies("debug")
@@ -154,7 +162,9 @@ kover {
                         "com.oscarp.citiesapp.data.remote.CityApiService",
                         "com.oscarp.citiesapp.data.remote.CityApiServiceImpl*",
                         "com.oscarp.citiesapp.ui.theme.*",
-                        "com.oscarp.citiesapp.App*"
+                        "com.oscarp.citiesapp.navigation.*",
+                        "com.oscarp.citiesapp.App*",
+                        "com.oscarp.citiesapp.ui.utils.MultiWindowSizeLayout*"
                     )
                 )
             }
