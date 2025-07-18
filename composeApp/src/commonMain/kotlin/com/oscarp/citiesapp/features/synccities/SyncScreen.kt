@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import citiesapp.composeapp.generated.resources.Res
@@ -33,9 +34,11 @@ import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
+import kotlin.time.Duration.Companion.seconds
 
 const val TagLoading = "LoadingContent"
 const val TagNotInternet = "NoInternetContent"
@@ -50,6 +53,7 @@ fun SyncScreen(
 
     LaunchedEffect(viewState.isCompleted) {
         if (viewState.isCompleted) {
+            delay(1.seconds)
             navController.navigate(CitiesDestination) {
                 popUpTo(SyncCitiesDestination) { inclusive = true }
             }
@@ -98,7 +102,7 @@ private fun LoadingContent(percent: Int) {
         )
     }
     Column(
-        modifier = Modifier.testTag(TagLoading),
+        modifier = Modifier.fillMaxSize().testTag(TagLoading),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -115,12 +119,14 @@ private fun LoadingContent(percent: Int) {
         if (percent == 0) {
             Text(
                 text = stringResource(Res.string.text_sync_getting_cities),
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
             )
         } else {
             Text(
                 text = stringResource(Res.string.text_sync_saving_cities),
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
             )
             AnimatedPercentText(
                 percent = percent,
@@ -132,7 +138,7 @@ private fun LoadingContent(percent: Int) {
 @Composable
 private fun NoInternetContent(onRetry: () -> Unit) {
     Column(
-        modifier = Modifier.testTag(TagNotInternet),
+        modifier = Modifier.fillMaxSize().testTag(TagNotInternet),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -151,15 +157,28 @@ private fun NoInternetContent(onRetry: () -> Unit) {
 @Composable
 private fun CompletedContent() {
     Column(
-        modifier = Modifier.testTag(TagCompleted),
+        modifier = Modifier.fillMaxSize().testTag(TagCompleted),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        val animFromJsonRes by rememberLottieComposition {
+            LottieCompositionSpec.JsonString(
+                Res.readBytes("files/compass.json").decodeToString()
+            )
+        }
+        Image(
+            painter = rememberLottiePainter(
+                composition = animFromJsonRes,
+                iterations = Compottie.IterateForever
+            ),
+            contentDescription = "Lottie animation"
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             stringResource(Res.string.text_sync_completed),
             style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
         )
     }

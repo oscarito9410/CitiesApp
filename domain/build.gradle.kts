@@ -36,6 +36,8 @@ kotlin {
                 api(libs.koin.core)
                 implementation(libs.coroutines.core)
                 implementation(libs.kermit)
+                implementation(libs.paging.common)
+                implementation(libs.paging.compose.common)
             }
         }
 

@@ -52,9 +52,11 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
+            implementation(compose.materialIconsExtended)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.navigationComposeMultiplatform)
+            implementation("org.jetbrains.compose.material3.adaptive:adaptive:1.1.2")
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(project.dependencies.platform(libs.koin.bom))
@@ -65,6 +67,10 @@ kotlin {
             implementation(libs.compottie.dot)
             implementation(libs.compottie.resources)
             implementation(libs.kermit)
+
+            implementation(libs.paging.common)
+            implementation(libs.paging.compose.common)
+            
             implementation(project(":data"))
             implementation(project(":domain"))
         }

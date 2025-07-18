@@ -30,6 +30,8 @@ material = "1.12.0"
 kermit = "2.0.6"
 compottie="2.0.0-rc04"
 navigation-compose = "2.9.0-beta03"
+paging = "3.3.0-alpha02-0.4.0"
+
 
 
 [libraries]
@@ -83,6 +85,8 @@ compottie-resources = { module = "io.github.alexzhirkevich:compottie-resources",
 
 navigationComposeMultiplatform = { module = "org.jetbrains.androidx.navigation:navigation-compose", name = "navigation-compose", version.ref = "navigation-compose" }
 
+paging-common = { module = "app.cash.paging:paging-common", version.ref = "paging" }
+paging-compose-common = { module = "app.cash.paging:paging-compose-common", version.ref = "paging" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -1,7 +1,25 @@
 <resources>
-    <string name="text_sync_getting_cities">Obteniendo ciudades...</string>
-    <string name="text_sync_saving_cities">Guardando ciudades...</string>
-    <string name="text_error_sync_cities">Ha ocurrido un error al sincronizar con el servidor.</string>
-    <string name="text_sync_retry">Reintentar</string>
-    <string name="text_sync_completed">Sincronización completada! \n Bienvenido!</string>
+
+    <!-- Sync screen -->
+    <string name="text_sync_getting_cities">Conectando para obtener las ciudades disponibles...</string>
+    <string name="text_sync_saving_cities">Sincronizando ciudades, por favor espera...</string>
+    <string name="text_error_sync_cities">No pudimos completar la sincronización. Verifica tu conexión e inténtalo de nuevo.</string>
+    <string name="text_sync_retry">Intentar de nuevo</string>
+    <string name="text_sync_completed">¡Todo listo! Las ciudades se sincronizaron correctamente 🌎</string>
+
+
+    <!-- City List -->
+    <string name="cities_found">%1$d ciudades encontradas</string>
+    <string name="distance_away">A %.1f km de distancia</string>
+    <string name="add_to_favorites">Agregar a favoritos</string>
+    <string name="remove_from_favorites">Quitar de favoritos</string>
+    <string name="weather_info">Ver información del clima</string>
+
+    <!-- Search and Filter -->
+    <string name="search_cities">Buscar ciudades</string>
+    <string name="search_icon">Buscar</string>
+    <string name="search_placeholder">Escribe el nombre de la ciudad…</string>
+    <string name="show_only_favorites">Mostrar solo favoritos</string>
+    <string name="clear_search">Limpiar búsqueda</string>
+
 </resources>
