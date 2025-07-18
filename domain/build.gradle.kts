@@ -18,6 +18,7 @@ kotlin {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
+
     }
     iosX64()
     iosArm64()
@@ -38,6 +39,15 @@ kotlin {
                 implementation(libs.kermit)
                 implementation(libs.paging.common)
                 implementation(libs.paging.compose.common)
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.turbine)
+                implementation(libs.coroutines.test)
+                implementation(libs.mockk)
             }
         }
 
