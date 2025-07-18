@@ -7,7 +7,8 @@ import com.oscarp.citiesapp.data.local.AppDatabase
 import com.oscarp.citiesapp.data.local.dao.CityDao
 import com.oscarp.citiesapp.data.local.getDatabaseBuilder
 import com.oscarp.citiesapp.data.remote.KtorHttpClientProvider
-import kotlinx.coroutines.Dispatchers
+import com.oscarp.citiesapp.domain.di.DispatchersQualifier
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 actual fun platformModule() = module {
@@ -23,7 +24,11 @@ actual fun platformModule() = module {
         CityDataImporterImpl(
             cityDao = get<CityDao>(),
             json = get(),
-            ioDispatcher = Dispatchers.IO
+            ioDispatcher = get(
+                named(
+                    DispatchersQualifier.IO
+                )
+            )
         )
     }
 }

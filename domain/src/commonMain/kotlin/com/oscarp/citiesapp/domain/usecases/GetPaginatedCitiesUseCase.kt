@@ -2,14 +2,17 @@ package com.oscarp.citiesapp.domain.usecases
 
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.oscarp.citiesapp.domain.factory.CitiesPagingSourceFactory
+import com.oscarp.citiesapp.domain.factories.CitiesPagingSourceFactory
 import com.oscarp.citiesapp.domain.models.City
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 
-class GetPaginatedCitiesUseCase(
-    private val factory: CitiesPagingSourceFactory
+open class GetPaginatedCitiesUseCase(
+    private val factory: CitiesPagingSourceFactory,
+    private val ioDispatcher: CoroutineDispatcher
 ) {
-    operator fun invoke(
+    open operator fun invoke(
         searchQuery: String,
         onlyFavorites: Boolean
     ): Flow<PagingData<City>> {
@@ -21,7 +24,7 @@ class GetPaginatedCitiesUseCase(
                     onlyFavorites
                 )
             }
-        ).flow
+        ).flow.flowOn(ioDispatcher)
     }
 
     companion object {

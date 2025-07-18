@@ -1,4 +1,4 @@
-package com.oscarp.citiesapp.domain.factory
+package com.oscarp.citiesapp.domain.factories
 
 import app.cash.paging.PagingSource
 import com.oscarp.citiesapp.domain.models.City

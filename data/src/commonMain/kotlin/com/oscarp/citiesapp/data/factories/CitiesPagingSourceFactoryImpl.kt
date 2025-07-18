@@ -1,8 +1,8 @@
-package com.oscarp.citiesapp.data.factory
+package com.oscarp.citiesapp.data.factories
 
 import app.cash.paging.PagingSource
 import com.oscarp.citiesapp.data.paging.CitiesPagingSourceImpl
-import com.oscarp.citiesapp.domain.factory.CitiesPagingSourceFactory
+import com.oscarp.citiesapp.domain.factories.CitiesPagingSourceFactory
 import com.oscarp.citiesapp.domain.models.City
 import com.oscarp.citiesapp.domain.repositories.CityRepository
 
