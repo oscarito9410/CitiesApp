@@ -1,4 +1,4 @@
-package com.oscarp.citiesapp.domain.extenions
+package com.oscarp.citiesapp.domain.extensions
 
 import kotlin.math.pow
 

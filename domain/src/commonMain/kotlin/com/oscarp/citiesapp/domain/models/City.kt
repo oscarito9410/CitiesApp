@@ -1,6 +1,6 @@
 package com.oscarp.citiesapp.domain.models
 
-import com.oscarp.citiesapp.domain.extenions.format
+import com.oscarp.citiesapp.domain.extensions.format
 
 data class City(
     val id: Long,
