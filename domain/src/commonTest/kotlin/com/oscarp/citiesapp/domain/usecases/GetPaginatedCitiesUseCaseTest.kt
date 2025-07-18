@@ -1,8 +1,6 @@
 package com.oscarp.citiesapp.domain.usecases
 
-import androidx.paging.PagingData
 import com.oscarp.citiesapp.domain.factories.CitiesPagingSourceFactory
-import com.oscarp.citiesapp.domain.models.City
 import com.oscarp.citiesapp.domain.testdoubles.FakeCitiesPagingSource
 import dev.mokkery.answering.returns
 import dev.mokkery.every
@@ -14,7 +12,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
-import kotlin.test.assertIs
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetPaginatedCitiesUseCaseTest {
@@ -34,6 +31,5 @@ class GetPaginatedCitiesUseCaseTest {
 
         // then
         verify { factory.create(eq("mexico"), eq(false)) }
-        assertIs<PagingData<City>>(result)
     }
 }

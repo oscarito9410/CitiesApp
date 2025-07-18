@@ -1,7 +1,6 @@
 package com.oscarp.citiesapp.domain.usecases
 
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
+import app.cash.paging.PagingData
 import com.oscarp.citiesapp.domain.factories.CitiesPagingSourceFactory
 import com.oscarp.citiesapp.domain.models.City
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,7 +16,7 @@ open class GetPaginatedCitiesUseCase(
         onlyFavorites: Boolean
     ): Flow<PagingData<City>> {
         return app.cash.paging.Pager(
-            config = PagingConfig(pageSize = DEFAULT_PAGE_SIZE),
+            config = app.cash.paging.PagingConfig(pageSize = DEFAULT_PAGE_SIZE),
             pagingSourceFactory = {
                 factory.create(
                     searchQuery,

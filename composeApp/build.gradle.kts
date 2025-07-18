@@ -22,8 +22,8 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
         dependencies {
-            androidTestImplementation("androidx.compose.ui:ui-test-junit4-android:1.8.2")
-            debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
+            androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+            debugImplementation(libs.androidx.compose.ui.test.manifest)
         }
     }
 
@@ -77,8 +77,8 @@ kotlin {
 
         androidUnitTest.dependencies {
             implementation(libs.kotlin.test)
-            implementation("androidx.compose.ui:ui-test-junit4:1.8.2")
-            implementation("org.robolectric:robolectric:4.11.1")
+            implementation(libs.robolectric)
+            implementation(libs.androidx.compose.ui.test.junit4)
         }
 
         commonTest.dependencies {
