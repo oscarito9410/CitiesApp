@@ -79,6 +79,7 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.robolectric)
             implementation(libs.androidx.compose.ui.test.junit4)
+            implementation(libs.mockk)
         }
 
         commonTest.dependencies {

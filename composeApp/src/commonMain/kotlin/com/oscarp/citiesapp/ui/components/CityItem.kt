@@ -30,7 +30,7 @@ fun CityItem(
 ) {
     Card(
         modifier = modifier
-            .testTag(CityItemTag)
+            .testTag(CityItemTag + "_${city.id}")
             .fillMaxWidth()
             .clickable { onCityClicked() }
             .then(

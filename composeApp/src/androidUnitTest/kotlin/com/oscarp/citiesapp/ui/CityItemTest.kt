@@ -18,7 +18,7 @@ import kotlin.test.assertTrue
 class CityItemTest : RobolectricComposeTest() {
 
     private val testCity = City(
-        id = 1L,
+        id = 1,
         name = "Ciudad de México",
         latitude = 19.43,
         longitude = -99.13,
@@ -40,7 +40,7 @@ class CityItemTest : RobolectricComposeTest() {
         }
 
         // then
-        onNodeWithTag(CityItemTag)
+        onNodeWithTag("${CityItemTag}_1")
             .assertIsDisplayed()
 
         onNodeWithTag(FavoriteButtonTag)
@@ -85,7 +85,7 @@ class CityItemTest : RobolectricComposeTest() {
         }
 
         // when
-        onNodeWithTag(CityItemTag).performClick()
+        onNodeWithTag("${CityItemTag}_1").performClick()
 
         // then
         assertTrue(wasClicked)

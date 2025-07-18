@@ -38,7 +38,7 @@ class SearchFilterBarTest : RobolectricComposeTest() {
     }
 
     @Test
-    fun search_bar_text_input_and_clear_button_works() = runComposeUiTest {
+    fun search_bar_text_input_works() = runComposeUiTest {
         var query = ""
 
         setContent {

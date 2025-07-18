@@ -15,7 +15,7 @@ import citiesapp.composeapp.generated.resources.remove_from_favorites
 import com.oscarp.citiesapp.domain.models.City
 import org.jetbrains.compose.resources.stringResource
 
-const val FavoriteTextButtonTag = "FavoriteButton"
+const val FavoriteIconTag = "FavoriteIcon"
 
 @Composable
 fun FavoriteButton(
@@ -42,7 +42,7 @@ fun FavoriteButton(
 
         Icon(
             imageVector = icon,
-            modifier = Modifier.testTag(FavoriteTextButtonTag),
+            modifier = Modifier.testTag(FavoriteIconTag),
             contentDescription = contentDescription,
             tint = tint
         )

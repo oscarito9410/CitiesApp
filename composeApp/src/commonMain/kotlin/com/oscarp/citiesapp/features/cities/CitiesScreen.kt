@@ -18,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
@@ -30,6 +31,9 @@ import com.oscarp.citiesapp.ui.components.SearchFilterBar
 import com.oscarp.citiesapp.ui.theme.Dimens
 import com.oscarp.citiesapp.ui.utils.MultiWindowSizeLayout
 import org.koin.compose.koinInject
+
+const val RefreshLoadingIndicatorTag = "RefreshLoadingIndicator"
+const val CitiesListTag = "CitiesList"
 
 @Composable
 fun CitiesScreen(
@@ -109,7 +113,8 @@ fun CitiesList(
     selectedCity: City?
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .testTag(CitiesListTag),
         contentPadding = PaddingValues(Dimens.spacingLarge),
         verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
     ) {
@@ -137,7 +142,12 @@ private fun LazyListScope.citiesLoadState(cities: LazyPagingItems<City>) {
 
             refresh is LoadStateLoading -> {
                 item {
-                    RefreshLoadingState(modifier = Modifier.fillParentMaxSize())
+                    RefreshLoadingState(
+                        modifier = Modifier.fillParentMaxSize()
+                            .testTag(
+                                RefreshLoadingIndicatorTag
+                            )
+                    )
                 }
             }
 
