@@ -256,7 +256,6 @@ class AppDatabaseTest {
 
     @Test
     fun testSearch_emptyQuery() = runTest {
-        insertDefaultCities()
         val results = cityDao.getPaginatedCitiesNoSearch(
             onlyFavorites = false,
             loadSize = 10,
@@ -293,7 +292,6 @@ class AppDatabaseTest {
 
     @Test
     fun testCitiesCount() = runTest {
-        insertDefaultCities()
         val resultCount = cityDao.getCitiesCount()
         assertEquals(7, resultCount, "Expected all 7 cities for an count query")
     }
