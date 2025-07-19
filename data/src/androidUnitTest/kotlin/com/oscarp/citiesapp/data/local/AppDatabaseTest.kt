@@ -9,7 +9,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import kotlin.intArrayOf
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -17,12 +16,121 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-
 @Config(
     sdk = [34]
 )
 @RunWith(RobolectricTestRunner::class)
 class AppDatabaseTest {
+
+    private val fakeCities = listOf(
+        CityEntity(
+            id = 1,
+            name = "Albuquerque",
+            country = "US",
+            isFavorite = false,
+            latitude = 0.0,
+            longitude = 0.0
+        ),
+        CityEntity(
+            id = 2,
+            name = "Alabama",
+            country = "US",
+            isFavorite = false,
+            latitude = 0.0,
+            longitude = 0.0
+        ),
+        CityEntity(
+            id = 3,
+            name = "London",
+            country = "GB",
+            isFavorite = false,
+            latitude = 0.0,
+            longitude = 0.0
+        ),
+        CityEntity(
+            id = 4,
+            name = "Sydney",
+            country = "AU",
+            isFavorite = false,
+            latitude = 0.0,
+            longitude = 0.0
+        ),
+        CityEntity(
+            id = 5,
+            name = "Paris",
+            country = "FR",
+            isFavorite = true,
+            latitude = 0.0,
+            longitude = 0.0
+        ), // Favorite
+        CityEntity(
+            id = 6,
+            name = "Madrid del Alba",
+            country = "ES",
+            isFavorite = false,
+            latitude = 0.0,
+            longitude = 0.0
+        ),
+        CityEntity(
+            id = 7,
+            name = "Albany",
+            country = "US",
+            isFavorite = false,
+            latitude = 0.0,
+            longitude = 0.0
+        )
+    )
+
+    val fakeCitiesSecondPage = listOf(
+        CityEntity(
+            id = 10,
+            name = "CityA",
+            country = "C1",
+            isFavorite = false,
+            latitude = 0.0,
+            longitude = 0.0
+        ),
+        CityEntity(
+            id = 11,
+            name = "CityB",
+            country = "C1",
+            isFavorite = false,
+            latitude = 0.0,
+            longitude = 0.0
+        ),
+        CityEntity(
+            id = 12,
+            name = "CityC",
+            country = "C1",
+            isFavorite = false,
+            latitude = 0.0,
+            longitude = 0.0
+        ),
+        CityEntity(
+            id = 13,
+            name = "CityD",
+            country = "C1",
+            isFavorite = false,
+            latitude = 0.0,
+            longitude = 0.0
+        ),
+        CityEntity(
+            id = 14,
+            name = "CityE",
+            country = "C1",
+            isFavorite = false,
+            latitude = 0.0,
+            longitude = 0.0
+        ),
+        CityEntity(
+            id = 15,
+            name = "CityF",
+            country = "C1",
+            isFavorite = false,
+            latitude = 0.0,
+            longitude = 0.0
+        )
+    )
 
     fun getInMemoryDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
         return Room.inMemoryDatabaseBuilder(
@@ -42,65 +150,7 @@ class AppDatabaseTest {
     }
 
     private fun insertDefaultCities() = runTest {
-        val cities = listOf(
-            CityEntity(
-                id = 1,
-                name = "Albuquerque",
-                country = "US",
-                isFavorite = false,
-                latitude = 0.0,
-                longitude = 0.0
-            ),
-            CityEntity(
-                id = 2,
-                name = "Alabama",
-                country = "US",
-                isFavorite = false,
-                latitude = 0.0,
-                longitude = 0.0
-            ),
-            CityEntity(
-                id = 3,
-                name = "London",
-                country = "GB",
-                isFavorite = false,
-                latitude = 0.0,
-                longitude = 0.0
-            ),
-            CityEntity(
-                id = 4,
-                name = "Sydney",
-                country = "AU",
-                isFavorite = false,
-                latitude = 0.0,
-                longitude = 0.0
-            ),
-            CityEntity(
-                id = 5,
-                name = "Paris",
-                country = "FR",
-                isFavorite = true,
-                latitude = 0.0,
-                longitude = 0.0
-            ), // Favorite
-            CityEntity(
-                id = 6,
-                name = "Madrid del Alba",
-                country = "ES",
-                isFavorite = false,
-                latitude = 0.0,
-                longitude = 0.0
-            ),
-            CityEntity(
-                id = 7,
-                name = "Albany",
-                country = "US",
-                isFavorite = false,
-                latitude = 0.0,
-                longitude = 0.0
-            )
-        )
-        cityDao.insertCities(cities)
+        cityDao.insertCities(fakeCities)
     }
 
     @AfterTest
@@ -217,57 +267,7 @@ class AppDatabaseTest {
 
     @Test
     fun testSearch_withPagination_offsetAndLimit() = runTest {
-        val allCities = listOf(
-            CityEntity(
-                id = 10,
-                name = "CityA",
-                country = "C1",
-                isFavorite = false,
-                latitude = 0.0,
-                longitude = 0.0
-            ),
-            CityEntity(
-                id = 11,
-                name = "CityB",
-                country = "C1",
-                isFavorite = false,
-                latitude = 0.0,
-                longitude = 0.0
-            ),
-            CityEntity(
-                id = 12,
-                name = "CityC",
-                country = "C1",
-                isFavorite = false,
-                latitude = 0.0,
-                longitude = 0.0
-            ),
-            CityEntity(
-                id = 13,
-                name = "CityD",
-                country = "C1",
-                isFavorite = false,
-                latitude = 0.0,
-                longitude = 0.0
-            ),
-            CityEntity(
-                id = 14,
-                name = "CityE",
-                country = "C1",
-                isFavorite = false,
-                latitude = 0.0,
-                longitude = 0.0
-            ),
-            CityEntity(
-                id = 15,
-                name = "CityF",
-                country = "C1",
-                isFavorite = false,
-                latitude = 0.0,
-                longitude = 0.0
-            )
-        )
-        cityDao.insertCities(allCities) // Add more cities to test pagination
+        cityDao.insertCities(fakeCitiesSecondPage)
 
         val resultsPage1 = cityDao.getPaginatedCitiesNoSearch(
             onlyFavorites = false,
@@ -279,7 +279,6 @@ class AppDatabaseTest {
         assertEquals("Alabama", resultsPage1[0].name)
         assertEquals("Albany", resultsPage1[1].name)
         assertEquals("Albuquerque", resultsPage1[2].name)
-
 
         val resultsPage2 = cityDao.getPaginatedCitiesNoSearch(
             onlyFavorites = false,
