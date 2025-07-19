@@ -147,7 +147,7 @@ kover {
         filters {
             excludes {
                 androidGeneratedClasses()
-                annotatedBy("androidx.compose.ui.tooling.preview.Preview")
+                annotatedBy("org.jetbrains.compose.ui.tooling.preview.Preview")
                 classes(
                     listOf(
                         "*di.*",
@@ -164,7 +164,8 @@ kover {
                         "com.oscarp.citiesapp.ui.theme.*",
                         "com.oscarp.citiesapp.navigation.*",
                         "com.oscarp.citiesapp.App*",
-                        "com.oscarp.citiesapp.ui.utils.MultiWindowSizeLayout*"
+                        "com.oscarp.citiesapp.ui.utils.MultiWindowSizeLayout*",
+                        "citiesapp.composeapp.generated.resources.*"
                     )
                 )
             }
