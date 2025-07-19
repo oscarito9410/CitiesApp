@@ -41,6 +41,7 @@ import org.koin.compose.koinInject
 import kotlin.time.Duration.Companion.seconds
 
 const val TagLoading = "LoadingContent"
+const val TagRetryButton = "RetryButton"
 const val TagNotInternet = "NoInternetContent"
 const val TagCompleted = "CompletedContent"
 
@@ -148,7 +149,10 @@ private fun NoInternetContent(onRetry: () -> Unit) {
             style = MaterialTheme.typography.bodyLarge
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onRetry) {
+        Button(
+            onClick = onRetry,
+            modifier = Modifier.testTag(TagRetryButton)
+        ) {
             Text(stringResource(Res.string.text_sync_retry))
         }
     }

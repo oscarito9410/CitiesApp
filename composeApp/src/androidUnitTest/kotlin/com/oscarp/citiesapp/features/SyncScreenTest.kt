@@ -17,6 +17,7 @@ import com.oscarp.citiesapp.features.synccities.SyncViewState
 import com.oscarp.citiesapp.features.synccities.TagCompleted
 import com.oscarp.citiesapp.features.synccities.TagLoading
 import com.oscarp.citiesapp.features.synccities.TagNotInternet
+import com.oscarp.citiesapp.features.synccities.TagRetryButton
 import com.oscarp.citiesapp.navigation.CitiesDestination
 import com.oscarp.citiesapp.testutil.RobolectricComposeTest
 import com.oscarp.citiesapp.ui.theme.AppTheme
@@ -93,7 +94,7 @@ class SyncScreenTest : RobolectricComposeTest() {
             }
 
             onNodeWithTag(TagNotInternet).assertIsDisplayed()
-            onNodeWithText("Intentar de nuevo").performClick()
+            onNodeWithTag(TagRetryButton).performClick()
 
             verify {
                 viewModel.processIntent(SyncIntent.StartSync)
