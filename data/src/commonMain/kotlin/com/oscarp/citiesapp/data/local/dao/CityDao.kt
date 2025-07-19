@@ -33,14 +33,15 @@ interface CityDao {
 
     @Query(
         """
-        SELECT c.* 
-        FROM cities AS c
-        JOIN cities_fts AS fts ON c.id = fts.rowid
-        WHERE (:onlyFavorites = 0 OR c.isFavorite = 1)
-          AND cities_fts MATCH 'name:' || :query || '* OR country:' || :query || '*'
-        ORDER BY c.name
-        LIMIT :loadSize OFFSET :offset
-    """
+    SELECT c.*
+    FROM cities AS c
+    JOIN cities_fts AS fts ON c.id = fts.rowid
+    WHERE (:onlyFavorites = 0 OR c.isFavorite = 1)
+      AND cities_fts MATCH 'name:' || :query || '* OR country:' || :query || '*'
+      AND (c.name LIKE :query || '%' COLLATE NOCASE OR c.country LIKE :query || '%' COLLATE NOCASE)
+    ORDER BY c.name
+    LIMIT :loadSize OFFSET :offset
+"""
     )
     suspend fun getPaginatedCitiesWithSearch(
         query: String,

@@ -70,6 +70,7 @@ kotlin {
                 implementation(libs.turbine)
                 implementation(libs.coroutines.test)
                 implementation(libs.mockk)
+                implementation(libs.robolectric)
             }
         }
 
