@@ -22,6 +22,7 @@ import co.touchlab.kermit.Logger
  * @param portraitTablet (Optional) The composable to display for portrait tablet configurations.
  * @param portraitPhone (Optional) The composable to display for portrait phone configurations.
  */
+
 @Composable
 fun MultiWindowSizeLayout(
     default: @Composable () -> Unit,
@@ -40,6 +41,21 @@ fun MultiWindowSizeLayout(
         portraitPhone,
         landscapePhone
     )
+}
+
+@Composable
+fun MultiWindowSizeLayout(
+    content: @Composable (DeviceLayoutMode) -> Unit
+) {
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    val layoutMode =
+        remember(windowSizeClass.windowWidthSizeClass, windowSizeClass.windowHeightSizeClass) {
+            when {
+                windowSizeClass.isPortraitPhone() -> DeviceLayoutMode.SINGLE_PANE
+                else -> DeviceLayoutMode.TWO_PANE
+            }
+        }
+    content(layoutMode)
 }
 
 /**

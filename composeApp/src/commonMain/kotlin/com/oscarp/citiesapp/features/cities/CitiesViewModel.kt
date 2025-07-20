@@ -62,6 +62,10 @@ class CitiesViewModel(
                 toggleFavorite(intent.city)
             }
 
+            is CitiesIntent.OnCitySelected -> {
+                _state.update { it.copy(selectedCity = intent.city) }
+            }
+
             CitiesIntent.OnShowFavoritesFilter -> {
                 _state.update { it.copy(showOnlyFavorites = !it.showOnlyFavorites) }
             }
