@@ -19,4 +19,8 @@ interface CityRepository {
         searchQuery: String,
         onlyFavorites: Boolean
     ): List<City>
+
+    suspend fun toggleFavorite(cityId: Long): Boolean
+
+    fun getFavoriteCitiesIds(): Flow<Set<Long>>
 }

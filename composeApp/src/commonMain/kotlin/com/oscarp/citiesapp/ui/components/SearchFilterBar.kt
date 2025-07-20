@@ -42,7 +42,7 @@ fun SearchFilterBar(
     searchQuery: String,
     showOnlyFavorites: Boolean,
     onSearchQueryChanged: (String) -> Unit,
-    onToggleFavoritesFilter: () -> Unit,
+    onShowFavoritesFilter: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -90,7 +90,7 @@ fun SearchFilterBar(
             )
             Switch(
                 checked = showOnlyFavorites,
-                onCheckedChange = { onToggleFavoritesFilter() },
+                onCheckedChange = { onShowFavoritesFilter() },
                 modifier = Modifier.testTag(SearchFavoritesSwitchTag)
             )
         }

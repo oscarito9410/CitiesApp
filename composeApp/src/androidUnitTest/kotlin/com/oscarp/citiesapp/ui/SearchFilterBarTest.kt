@@ -27,7 +27,7 @@ class SearchFilterBarTest : RobolectricComposeTest() {
                     searchQuery = "",
                     showOnlyFavorites = false,
                     onSearchQueryChanged = {},
-                    onToggleFavoritesFilter = {}
+                    onShowFavoritesFilter = {}
                 )
             }
         }
@@ -47,7 +47,7 @@ class SearchFilterBarTest : RobolectricComposeTest() {
                     searchQuery = query,
                     showOnlyFavorites = false,
                     onSearchQueryChanged = { query = it },
-                    onToggleFavoritesFilter = {}
+                    onShowFavoritesFilter = {}
                 )
             }
         }
@@ -66,7 +66,7 @@ class SearchFilterBarTest : RobolectricComposeTest() {
                     searchQuery = "",
                     showOnlyFavorites = false,
                     onSearchQueryChanged = {},
-                    onToggleFavoritesFilter = { toggled = true }
+                    onShowFavoritesFilter = { toggled = true }
                 )
             }
         }

@@ -1,6 +1,10 @@
 package com.oscarp.citiesapp.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,11 +22,14 @@ object SyncCitiesDestination
 
 @Composable
 fun AppNavigation(
-    navController: NavHostController = rememberNavController()
+    hostState: SnackbarHostState,
+    navController: NavHostController = rememberNavController(),
+    contentPadding: PaddingValues
 ) {
     NavHost(
         navController = navController,
-        startDestination = SyncCitiesDestination
+        startDestination = SyncCitiesDestination,
+        modifier = Modifier.padding(contentPadding)
     ) {
         // Sync Cities screen
         composable<SyncCitiesDestination> {
@@ -31,7 +38,7 @@ fun AppNavigation(
 
         // Cities screen
         composable<CitiesDestination> {
-            CitiesScreen()
+            CitiesScreen(hostState = hostState)
         }
     }
 }

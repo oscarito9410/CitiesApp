@@ -8,7 +8,7 @@ data class City(
     val country: String,
     val latitude: Double,
     val longitude: Double,
-    var isFavorite: Boolean = false,
+    val isFavorite: Boolean = false,
 ) {
     val displayName: String
         get() = "$name, $country"

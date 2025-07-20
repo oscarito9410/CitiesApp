@@ -2,6 +2,7 @@
 
 package com.oscarp.citiesapp.features
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
@@ -10,6 +11,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
 import app.cash.paging.PagingData
 import com.oscarp.citiesapp.domain.models.City
+import com.oscarp.citiesapp.features.cities.CitiesEffect
 import com.oscarp.citiesapp.features.cities.CitiesIntent
 import com.oscarp.citiesapp.features.cities.CitiesScreen
 import com.oscarp.citiesapp.features.cities.CitiesViewModel
@@ -18,8 +20,10 @@ import com.oscarp.citiesapp.testutil.RobolectricComposeTest
 import com.oscarp.citiesapp.ui.components.CityItemTag
 import com.oscarp.citiesapp.ui.components.FavoriteButtonTag
 import com.oscarp.citiesapp.ui.components.SearchFavoritesSwitchTag
+import com.oscarp.citiesapp.ui.resourcemanager.LocalizedMessage
 import com.oscarp.citiesapp.ui.theme.AppTheme
 import io.mockk.Runs
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -38,6 +42,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertIs
 
 @OptIn(ExperimentalTestApi::class)
 class CitiesScreenTest : RobolectricComposeTest() {
@@ -58,12 +63,14 @@ class CitiesScreenTest : RobolectricComposeTest() {
 
     private lateinit var stateFlow: MutableStateFlow<CitiesViewState>
     private lateinit var pagingFlow: MutableSharedFlow<PagingData<City>>
+    private lateinit var uiEffectFlow: MutableSharedFlow<CitiesEffect>
 
     @Before
     override fun setup() {
         Dispatchers.setMain(testDispatcher)
         stateFlow = MutableStateFlow(CitiesViewState())
         pagingFlow = MutableStateFlow(PagingData.empty())
+        uiEffectFlow = MutableStateFlow(CitiesEffect.Idle)
         fixtureViewModel()
         super.setup()
     }
@@ -110,7 +117,7 @@ class CitiesScreenTest : RobolectricComposeTest() {
 
             verify {
                 viewModel.processIntent(
-                    CitiesIntent.ToggleFavorite
+                    CitiesIntent.OnShowFavoritesFilter
                 )
             }
         }
@@ -135,9 +142,67 @@ class CitiesScreenTest : RobolectricComposeTest() {
         onNodeWithText("No Items").assertIsDisplayed()
     }
 
+    @Test
+    fun ui_effect_refresh_page_correctly() = runComposeUiTest {
+        fixtureViewModel()
+
+        testScope.runTest {
+            pagingFlow.emit(PagingData.from(emptyList()))
+            uiEffectFlow.emit(CitiesEffect.RefreshCitiesPagination)
+        }
+
+        setContent {
+            AppTheme {
+                CitiesScreen(viewModel = viewModel, onCityClicked = {})
+            }
+        }
+
+        waitForIdle()
+
+        (viewModel.uiEffect as StateFlow<CitiesEffect>).value.apply {
+            assertIs<CitiesEffect.RefreshCitiesPagination>(this)
+        }
+    }
+
+    @Test
+    fun ui_effect_show_snack_bar_correctly() = runComposeUiTest {
+        fixtureViewModel()
+
+        val hostState = mockk<SnackbarHostState>(relaxed = true)
+
+        testScope.runTest {
+            pagingFlow.emit(PagingData.from(emptyList()))
+            uiEffectFlow.emit(
+                CitiesEffect.ShowSnackBar(
+                    LocalizedMessage.CityNotFound
+                )
+            )
+        }
+
+        setContent {
+            AppTheme {
+                CitiesScreen(
+                    viewModel = viewModel,
+                    hostState = hostState,
+                    onCityClicked = {}
+                )
+            }
+        }
+
+        waitForIdle()
+
+        coVerify {
+            hostState.showSnackbar(
+                message = any(),
+                actionLabel = null
+            )
+        }
+    }
+
     private fun fixtureViewModel() {
         viewModel = mockk(relaxed = true) {
             every { state } returns stateFlow
+            every { uiEffect } returns uiEffectFlow as StateFlow<CitiesEffect>
             every { paginatedCities } returns pagingFlow as StateFlow<PagingData<City>>
         }
     }

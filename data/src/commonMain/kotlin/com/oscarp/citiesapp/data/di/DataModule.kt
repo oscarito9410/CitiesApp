@@ -47,7 +47,7 @@ fun dataModule(): Module = module {
         )
     }
 
-    single<CitiesPagingSourceFactory> {
+    factory<CitiesPagingSourceFactory> {
         CitiesPagingSourceFactoryImpl(
             repository = get()
         )

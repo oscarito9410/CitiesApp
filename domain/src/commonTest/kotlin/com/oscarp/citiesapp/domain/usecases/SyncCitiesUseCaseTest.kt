@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.oscarp.citiesapp.domain.usecases
 
 import app.cash.turbine.test
@@ -6,11 +8,16 @@ import com.oscarp.citiesapp.domain.repositories.CityRepository
 import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.mock
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -20,6 +27,16 @@ class SyncCitiesUseCaseTest {
     private val dispatcher = StandardTestDispatcher()
     private val repository: CityRepository = mock()
     private val useCase = SyncCitiesUseCase(repository)
+
+    @BeforeTest
+    fun setUp() {
+        Dispatchers.setMain(dispatcher)
+    }
+
+    @AfterTest
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
 
     @Test
     fun `invoke emits start inserting items and completed in order`() = runTest(dispatcher) {

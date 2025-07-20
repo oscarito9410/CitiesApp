@@ -12,12 +12,11 @@ fun CityDto.mapEntity(): CityEntity = CityEntity(
     longitude = coord.lon,
 )
 
-fun CityEntity.toDomain(): City {
-    return City(
-        id = id,
-        name = name,
-        country = country,
-        latitude = latitude,
-        longitude = longitude,
-    )
-}
+fun CityEntity.toDomain(): City = City(
+    id = id,
+    name = name,
+    country = country,
+    latitude = latitude,
+    longitude = longitude,
+    isFavorite = isFavorite
+)

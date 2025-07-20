@@ -5,6 +5,7 @@ import com.oscarp.citiesapp.data.importers.CityDataImporter
 import com.oscarp.citiesapp.data.local.dao.CityDao
 import com.oscarp.citiesapp.data.mappers.toDomain
 import com.oscarp.citiesapp.data.remote.CityApiService
+import com.oscarp.citiesapp.domain.exceptions.CityNotFoundException
 import com.oscarp.citiesapp.domain.models.City
 import com.oscarp.citiesapp.domain.models.CityDownload
 import com.oscarp.citiesapp.domain.repositories.CityRepository
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class CityRepositoryImpl(
@@ -29,6 +31,26 @@ class CityRepositoryImpl(
             cityDao.getCitiesCount() > 0
         }
     }
+
+    override fun syncCities(): Flow<CityDownload> = flow {
+        val channel = api.fetchCitiesStream()
+        importer.seedFromStream(channel, CHUNK_CITIES_SIZE)
+            .catch {
+                logger.e(
+                    throwable = it,
+                    message = { "error fetching cities stream" }
+                )
+                throw it
+            }
+            .collect {
+                emit(
+                    CityDownload(
+                        it.totalCities,
+                        it.totalInserted
+                    )
+                )
+            }
+    }.flowOn(ioDispatcher)
 
     override suspend fun getPaginatedCities(
         page: Int,
@@ -56,25 +78,21 @@ class CityRepositoryImpl(
         }
     }
 
-    override fun syncCities(): Flow<CityDownload> = flow {
-        val channel = api.fetchCitiesStream()
-        importer.seedFromStream(channel, CHUNK_CITIES_SIZE)
-            .catch {
-                logger.e(
-                    throwable = it,
-                    message = { "error fetching cities stream" }
-                )
-                throw it
+    override suspend fun toggleFavorite(cityId: Long): Boolean {
+        return withContext(ioDispatcher) {
+            val city = cityDao.getCityById(cityId)
+            if (city == null) {
+                logger.e { "city with id $cityId not found" }
+                throw CityNotFoundException("city with id $cityId not found")
             }
-            .collect {
-                emit(
-                    CityDownload(
-                        it.totalCities,
-                        it.totalInserted
-                    )
-                )
-            }
-    }.flowOn(ioDispatcher)
+            val cityUpdated = cityDao.updateFavoriteStatus(cityId, !city.isFavorite)
+            cityUpdated > 0
+        }
+    }
+
+    override fun getFavoriteCitiesIds(): Flow<Set<Long>> {
+        return cityDao.getFavoriteCitiesIdsFlow().map { it.toSet() }
+    }
 
     companion object {
         const val CHUNK_CITIES_SIZE = 20000
