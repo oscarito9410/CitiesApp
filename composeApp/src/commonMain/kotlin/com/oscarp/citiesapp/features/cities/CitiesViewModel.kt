@@ -36,8 +36,6 @@ class CitiesViewModel(
     private val _uiEffect = MutableSharedFlow<CitiesEffect>()
     val uiEffect: SharedFlow<CitiesEffect> = _uiEffect.asSharedFlow()
 
-    private val _localFavoritePatches = MutableStateFlow<Map<Long, Boolean>>(emptyMap())
-
     val paginatedCities: StateFlow<PagingData<City>> = state
         .debounce(DEBOUNCE_DELAY)
         .distinctUntilChanged()
@@ -74,11 +72,6 @@ class CitiesViewModel(
         viewModelScope.launch {
             val cityId = city.id
             val newFavoriteStatus = !city.isFavorite
-            _localFavoritePatches.update { currentMap ->
-                currentMap.toMutableMap().apply {
-                    put(city.id, newFavoriteStatus)
-                }
-            }
             try {
                 val successfullyUpdated = toggleFavoriteUseCase(cityId)
 

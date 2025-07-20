@@ -70,7 +70,7 @@ class ToggleFavoriteUseCaseTest {
     fun `invoke propagates exceptions from repository`() = runTest(dispatcher) {
         // given
         val cityId = 3L
-        val exception = CityNotFoundException("city not foundr")
+        val exception = CityNotFoundException("city not found")
         everySuspend { cityRepository.toggleFavorite(cityId) } throws exception
 
         // when & then
