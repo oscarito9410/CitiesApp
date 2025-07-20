@@ -49,6 +49,7 @@ fun SearchFilterBar(
         OutlinedTextField(
             value = searchQuery,
             onValueChange = onSearchQueryChanged,
+            singleLine = true,
             label = { Text(stringResource(Res.string.search_cities)) },
             placeholder = { Text(stringResource(Res.string.search_placeholder)) },
             leadingIcon = {
