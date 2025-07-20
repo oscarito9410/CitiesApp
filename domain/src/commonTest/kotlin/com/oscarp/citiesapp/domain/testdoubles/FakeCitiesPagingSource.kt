@@ -15,7 +15,23 @@ class FakeCitiesPagingSource : PagingSource<Int, City>() {
                     name = "Puebla",
                     latitude = 0.0,
                     longitude = 0.0,
-                    isFavorite = true,
+                    isFavorite = false,
+                    country = "MX"
+                ),
+                City(
+                    id = 2,
+                    name = "Puebla",
+                    latitude = 0.0,
+                    longitude = 0.0,
+                    isFavorite = false,
+                    country = "MX"
+                ),
+                City(
+                    id = 3,
+                    name = "Puebla",
+                    latitude = 0.0,
+                    longitude = 0.0,
+                    isFavorite = false,
                     country = "MX"
                 )
             ),

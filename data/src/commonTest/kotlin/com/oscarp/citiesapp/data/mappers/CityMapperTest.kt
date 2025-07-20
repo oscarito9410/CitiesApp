@@ -53,5 +53,6 @@ class CityMapperTest {
         assertEquals("US", domain.country)
         assertEquals(98.76, domain.latitude)
         assertEquals(54.32, domain.longitude)
+        assertEquals(true, entity.isFavorite)
     }
 }

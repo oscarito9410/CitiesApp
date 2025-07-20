@@ -22,4 +22,8 @@
     <string name="show_only_favorites">Mostrar solo favoritos</string>
     <string name="clear_search">Limpiar búsqueda</string>
 
+    <string name="favorite_status_updated">Favorito actualizado!</string>
+    <string name="failed_to_update_favorite_status">No se pudo actualizar el estado favorito.</string>
+    <string name="city_not_found">Ciudad no encontrada</string>
+    <string name="unexpected_error">Error inesperado</string>
 </resources>

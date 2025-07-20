@@ -22,7 +22,8 @@ fun presentationModule(): Module = module {
 
     single<CitiesViewModel> {
         CitiesViewModel(
-            get()
+            get(),
+            get(),
         )
     }
 }

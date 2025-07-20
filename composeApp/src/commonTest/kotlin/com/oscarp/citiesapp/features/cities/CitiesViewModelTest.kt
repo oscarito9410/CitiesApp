@@ -3,17 +3,24 @@
 package com.oscarp.citiesapp.features.cities
 
 import app.cash.paging.PagingData
+import com.oscarp.citiesapp.domain.exceptions.CityNotFoundException
 import com.oscarp.citiesapp.domain.models.City
 import com.oscarp.citiesapp.domain.usecases.GetPaginatedCitiesUseCase
+import com.oscarp.citiesapp.domain.usecases.ToggleFavoriteUseCase
+import com.oscarp.citiesapp.ui.resourcemanager.LocalizedMessage
 import dev.mokkery.answering.returns
+import dev.mokkery.answering.throws
 import dev.mokkery.every
+import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -28,14 +35,33 @@ import kotlin.test.assertTrue
 class CitiesViewModelTest {
 
     private val dispatcher = StandardTestDispatcher()
-    private val useCase: GetPaginatedCitiesUseCase = mock()
+    private val getPaginatedCitiesUseCase: GetPaginatedCitiesUseCase = mock()
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase = mock()
     private lateinit var viewModel: CitiesViewModel
+
+    private val fakeCity = City(
+        id = 1,
+        name = "Mexico City",
+        country = "Mexico",
+        isFavorite = false,
+        latitude = 0.0,
+        longitude = 0.0
+    )
 
     @BeforeTest
     fun setUp() {
         Dispatchers.setMain(dispatcher)
-        every { useCase.invoke(any(), any()) } returns flowOf(PagingData.empty())
-        viewModel = CitiesViewModel(useCase)
+        every {
+            getPaginatedCitiesUseCase.invoke(
+                any(),
+                any(),
+                any()
+            )
+        } returns flowOf(PagingData.empty())
+        viewModel = CitiesViewModel(
+            getPaginatedCitiesUseCase,
+            toggleFavoriteUseCase
+        )
     }
 
     @AfterTest
@@ -46,7 +72,7 @@ class CitiesViewModelTest {
     @Test
     fun `processIntent Search updates query in state`() = runTest(dispatcher) {
         // when
-        viewModel.processIntent(CitiesIntent.Search("cdmx"))
+        viewModel.processIntent(CitiesIntent.OnSearchQueryChanged("cdmx"))
         advanceTimeBy(350)
 
         // then
@@ -59,7 +85,7 @@ class CitiesViewModelTest {
         assertFalse(viewModel.state.value.showOnlyFavorites)
 
         // when
-        viewModel.processIntent(CitiesIntent.ToggleFavorite)
+        viewModel.processIntent(CitiesIntent.OnShowFavoritesFilter)
 
         // then
         assertTrue(viewModel.state.value.showOnlyFavorites)
@@ -68,11 +94,114 @@ class CitiesViewModelTest {
     @Test
     fun `paginatedCities emits PagingData when state changes`() = runTest(dispatcher) {
         // when
-        viewModel.processIntent(CitiesIntent.Search("oaxaca"))
+        viewModel.processIntent(CitiesIntent.OnSearchQueryChanged("oaxaca"))
         advanceTimeBy(350)
 
         // then
         val result = viewModel.paginatedCities.value
         assertIs<PagingData<City>>(result)
     }
+
+    @Test
+    fun `toggleFavorite success emits RefreshCitiesPagination when removing from favorites with filter on`() =
+        runTest(dispatcher) {
+            // arrange: Collect effects to assert them later
+            val emittedEffects = mutableListOf<CitiesEffect>()
+            val collectorJob = launch {
+                viewModel.uiEffect.collect { emittedEffects.add(it) }
+            }
+
+            // arrange: Set up the conditions for the test
+            val favoriteCity = fakeCity.copy(isFavorite = true)
+            everySuspend { toggleFavoriteUseCase(favoriteCity.id) } returns true
+            viewModel.processIntent(CitiesIntent.OnShowFavoritesFilter) // Turn on the favorite filter
+
+            // act: Toggle the favorite off
+            viewModel.processIntent(CitiesIntent.OnFavoriteToggled(favoriteCity))
+            advanceUntilIdle() // Ensure the coroutine in the ViewModel completes
+
+            // assert
+            assertTrue(emittedEffects.isNotEmpty(), "ui effect should have been emitted")
+            assertIs<CitiesEffect.RefreshCitiesPagination>(
+                emittedEffects.first(),
+                "the effect should be RefreshCitiesPagination"
+            )
+
+            collectorJob.cancel()
+        }
+
+    @Test
+    fun `toggleFavorite success does NOT emit effect when adding to favorites`() =
+        runTest(dispatcher) {
+            // given
+            val emittedEffects = mutableListOf<CitiesEffect>()
+            val collectorJob = launch {
+                viewModel.uiEffect.collect { emittedEffects.add(it) }
+            }
+            val nonFavoriteCity = fakeCity.copy(isFavorite = false)
+            everySuspend { toggleFavoriteUseCase(nonFavoriteCity.id) } returns true
+
+            // when
+            viewModel.processIntent(CitiesIntent.OnFavoriteToggled(nonFavoriteCity))
+            advanceUntilIdle()
+
+            // then
+            assertTrue(
+                emittedEffects.isEmpty(),
+                "no effects should be emitted when adding a favorite"
+            )
+
+            collectorJob.cancel()
+        }
+
+    @Test
+    fun `toggleFavorite failure emits FailedToUpdateFavoriteStatus snackbar`() =
+        runTest(dispatcher) {
+            // given
+            val emittedEffects = mutableListOf<CitiesEffect>()
+            val collectorJob = launch {
+                viewModel.uiEffect.collect { emittedEffects.add(it) }
+            }
+            everySuspend { toggleFavoriteUseCase(fakeCity.id) } returns false
+
+            // when
+            viewModel.processIntent(CitiesIntent.OnFavoriteToggled(fakeCity))
+            advanceUntilIdle()
+
+            // then
+            val expectedEffect =
+                CitiesEffect.ShowSnackBar(LocalizedMessage.FailedToUpdateFavoriteStatus)
+            assertEquals(
+                expectedEffect,
+                emittedEffects.first(),
+                "FailedToUpdate snackbar should be shown"
+            )
+
+            collectorJob.cancel()
+        }
+
+    @Test
+    fun `toggleFavorite throws CityNotFoundException emits CityNotFound snackbar`() =
+        runTest(dispatcher) {
+            // given
+            val emittedEffects = mutableListOf<CitiesEffect>()
+            val collectorJob = launch {
+                viewModel.uiEffect.collect { emittedEffects.add(it) }
+            }
+            everySuspend { toggleFavoriteUseCase(fakeCity.id) } throws CityNotFoundException("No city found")
+
+            // when
+            viewModel.processIntent(CitiesIntent.OnFavoriteToggled(fakeCity))
+            advanceUntilIdle()
+
+            // then
+            val expectedEffect = CitiesEffect.ShowSnackBar(LocalizedMessage.CityNotFound)
+            assertEquals(
+                expectedEffect,
+                emittedEffects.first(),
+                "CityNotFound snackbar should be shown"
+            )
+
+            collectorJob.cancel()
+        }
 }

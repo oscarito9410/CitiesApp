@@ -42,13 +42,14 @@ fun SearchFilterBar(
     searchQuery: String,
     showOnlyFavorites: Boolean,
     onSearchQueryChanged: (String) -> Unit,
-    onToggleFavoritesFilter: () -> Unit,
+    onShowFavoritesFilter: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         OutlinedTextField(
             value = searchQuery,
             onValueChange = onSearchQueryChanged,
+            singleLine = true,
             label = { Text(stringResource(Res.string.search_cities)) },
             placeholder = { Text(stringResource(Res.string.search_placeholder)) },
             leadingIcon = {
@@ -90,7 +91,7 @@ fun SearchFilterBar(
             )
             Switch(
                 checked = showOnlyFavorites,
-                onCheckedChange = { onToggleFavoritesFilter() },
+                onCheckedChange = { onShowFavoritesFilter() },
                 modifier = Modifier.testTag(SearchFavoritesSwitchTag)
             )
         }

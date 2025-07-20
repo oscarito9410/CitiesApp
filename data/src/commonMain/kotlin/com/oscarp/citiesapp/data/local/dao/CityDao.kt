@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.oscarp.citiesapp.data.local.entities.CityEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CityDao {
@@ -16,6 +17,12 @@ interface CityDao {
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCities(cities: List<CityEntity>)
+
+    @Query("SELECT * FROM cities WHERE id = :cityId")
+    suspend fun getCityById(cityId: Long): CityEntity?
+
+    @Query("UPDATE cities SET isFavorite = :isFavorite WHERE id = :cityId")
+    suspend fun updateFavoriteStatus(cityId: Long, isFavorite: Boolean): Int
 
     @Query(
         """
@@ -49,4 +56,7 @@ interface CityDao {
         loadSize: Int,
         offset: Int
     ): List<CityEntity>
+
+    @Query("SELECT id FROM cities WHERE isFavorite = 1")
+    fun getFavoriteCitiesIdsFlow(): Flow<List<Long>>
 }
