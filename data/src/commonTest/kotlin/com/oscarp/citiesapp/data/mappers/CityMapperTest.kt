@@ -1,8 +1,8 @@
 package com.oscarp.citiesapp.data.mappers
 
 import com.oscarp.citiesapp.data.local.entities.CityEntity
-import com.oscarp.citiesapp.data.remote.CityDto
-import com.oscarp.citiesapp.data.remote.CoordDto
+import com.oscarp.citiesapp.data.remote.dtos.CityDto
+import com.oscarp.citiesapp.data.remote.dtos.CoordDto
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

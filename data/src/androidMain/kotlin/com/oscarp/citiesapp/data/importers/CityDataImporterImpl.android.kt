@@ -3,8 +3,8 @@ package com.oscarp.citiesapp.data.importers
 import co.touchlab.kermit.Logger
 import com.oscarp.citiesapp.data.local.dao.CityDao
 import com.oscarp.citiesapp.data.mappers.mapEntity
-import com.oscarp.citiesapp.data.remote.CityDownloadDto
-import com.oscarp.citiesapp.data.remote.CityDto
+import com.oscarp.citiesapp.data.remote.dtos.CityDownloadDto
+import com.oscarp.citiesapp.data.remote.dtos.CityDto
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.jvm.javaio.toInputStream
 import kotlinx.coroutines.CoroutineDispatcher

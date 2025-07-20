@@ -1,6 +1,6 @@
 package com.oscarp.citiesapp.data.importers
 
-import com.oscarp.citiesapp.data.remote.CityDownloadDto
+import com.oscarp.citiesapp.data.remote.dtos.CityDownloadDto
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.flow.Flow
 

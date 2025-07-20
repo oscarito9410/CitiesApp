@@ -7,7 +7,7 @@ import com.oscarp.citiesapp.data.importers.CityDataImporter
 import com.oscarp.citiesapp.data.local.dao.CityDao
 import com.oscarp.citiesapp.data.local.entities.CityEntity
 import com.oscarp.citiesapp.data.remote.CityApiService
-import com.oscarp.citiesapp.data.remote.CityDownloadDto
+import com.oscarp.citiesapp.data.remote.dtos.CityDownloadDto
 import com.oscarp.citiesapp.domain.exceptions.CityNotFoundException
 import dev.mokkery.answering.returns
 import dev.mokkery.every

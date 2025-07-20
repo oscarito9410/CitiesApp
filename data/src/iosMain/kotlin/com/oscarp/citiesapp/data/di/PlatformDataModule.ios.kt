@@ -6,7 +6,7 @@ import com.oscarp.citiesapp.data.importers.CityDataImporterImpl
 import com.oscarp.citiesapp.data.local.AppDatabase
 import com.oscarp.citiesapp.data.local.dao.CityDao
 import com.oscarp.citiesapp.data.local.getDatabaseBuilder
-import com.oscarp.citiesapp.data.remote.KtorHttpClientProvider
+import com.oscarp.citiesapp.data.remote.client.KtorHttpClientProvider
 import org.koin.dsl.module
 
 actual fun platformModule() = module {
