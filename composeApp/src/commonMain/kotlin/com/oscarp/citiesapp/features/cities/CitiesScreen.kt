@@ -40,6 +40,8 @@ import org.koin.compose.koinInject
 
 const val RefreshLoadingIndicatorTag = "RefreshLoadingIndicator"
 const val CitiesListTag = "CitiesList"
+const val CityMapDetailTag = "CityMapDetail"
+const val SingleColumnCitiesListTag = "SingleColumnCitiesList"
 
 @Composable
 fun CitiesScreen(
@@ -133,7 +135,10 @@ fun SinglePaneCitiesScreenContent(
     onToggleFavorite: (City) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(
+        modifier = modifier.fillMaxSize()
+            .testTag(SingleColumnCitiesListTag)
+    ) {
         SearchFilterBar(
             searchQuery = searchQuery,
             showOnlyFavorites = showOnlyFavorites,
@@ -180,10 +185,14 @@ fun TwoPaneCitiesScreenContent(
                 selectedCity = selectedCity
             )
         }
-        Box(modifier = Modifier.weight(1f)) {
+        Box(
+            modifier = Modifier.weight(1f)
+        ) {
             selectedCity?.let {
                 CityMapDetail(
-                    city = it
+                    city = it,
+                    modifier = Modifier.fillMaxSize()
+                        .testTag(CityMapDetailTag)
                 )
             }
         }

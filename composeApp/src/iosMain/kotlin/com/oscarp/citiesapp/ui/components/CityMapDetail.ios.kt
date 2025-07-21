@@ -1,6 +1,5 @@
 package com.oscarp.citiesapp.ui.components
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.interop.UIKitView
@@ -17,13 +16,14 @@ const val ZoomKms = 5000.0
 @OptIn(ExperimentalForeignApi::class)
 @Composable
 actual fun CityMapDetail(
-    city: City
+    city: City,
+    modifier: Modifier
 ) {
     UIKitView(
         factory = {
             MKMapView()
         },
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         update = { mapView ->
             // this update block is called whenever the composable recomposes.
 

@@ -1,7 +1,11 @@
-@file:OptIn(ExperimentalCoroutinesApi::class)
+@file:OptIn(
+    ExperimentalCoroutinesApi::class,
+    ExperimentalTestApi::class
+)
 
 package com.oscarp.citiesapp.features
 
+import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
@@ -16,6 +20,9 @@ import com.oscarp.citiesapp.features.cities.CitiesIntent
 import com.oscarp.citiesapp.features.cities.CitiesScreen
 import com.oscarp.citiesapp.features.cities.CitiesViewModel
 import com.oscarp.citiesapp.features.cities.CitiesViewState
+import com.oscarp.citiesapp.features.cities.CityMapDetailTag
+import com.oscarp.citiesapp.features.cities.SingleColumnCitiesListTag
+import com.oscarp.citiesapp.testutil.DeviceQualifiers
 import com.oscarp.citiesapp.testutil.RobolectricComposeTest
 import com.oscarp.citiesapp.ui.components.CityItemTag
 import com.oscarp.citiesapp.ui.components.FavoriteButtonTag
@@ -42,10 +49,15 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.ParameterizedRobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import kotlin.test.assertIs
 
-@OptIn(ExperimentalTestApi::class)
-class CitiesScreenTest : RobolectricComposeTest() {
+@RunWith(ParameterizedRobolectricTestRunner::class)
+class CitiesScreenTest(
+    private val qualifiers: String
+) : RobolectricComposeTest() {
 
     private lateinit var viewModel: CitiesViewModel
 
@@ -68,6 +80,8 @@ class CitiesScreenTest : RobolectricComposeTest() {
     @Before
     override fun setup() {
         Dispatchers.setMain(testDispatcher)
+        RuntimeEnvironment.setQualifiers(qualifiers)
+
         stateFlow = MutableStateFlow(CitiesViewState())
         pagingFlow = MutableStateFlow(PagingData.empty())
         uiEffectFlow = MutableStateFlow(CitiesEffect.Idle)
@@ -96,6 +110,12 @@ class CitiesScreenTest : RobolectricComposeTest() {
 
             onNodeWithTag("${CityItemTag}_1").assertIsDisplayed()
             onNodeWithTag(FavoriteButtonTag).assertIsDisplayed()
+
+            // when phone is portrait then map is not displayed
+            if (qualifiers == DeviceQualifiers.PhonePortrait) {
+                onNodeWithTag(CityMapDetailTag).assertDoesNotExist()
+                onNodeWithTag(SingleColumnCitiesListTag).assertIsDisplayed()
+            }
         }
 
     @Test
@@ -199,11 +219,54 @@ class CitiesScreenTest : RobolectricComposeTest() {
         }
     }
 
+    @Test
+    fun cities_screen_displays_search_filter_bar_and_map_when_tablet() {
+        if (qualifiers == DeviceQualifiers.PhonePortrait) {
+            Log.d("CitiesScreenTest", "Skipping tablet test on phone portrait")
+            return
+        }
+
+        runComposeUiTest(effectContext = testDispatcher) {
+            testScope.runTest {
+                pagingFlow.emit(PagingData.from(listOf(fakeCity)))
+                stateFlow.emit(
+                    CitiesViewState(
+                        selectedCity = fakeCity,
+                        isLoading = false
+                    )
+                )
+            }
+
+            setContent {
+                AppTheme {
+                    CitiesScreen(viewModel = viewModel)
+                }
+            }
+
+            onNodeWithTag("${CityItemTag}_1").assertIsDisplayed()
+            onNodeWithTag(FavoriteButtonTag).assertIsDisplayed()
+            // assert the map is shown in tablet mode
+            onNodeWithText(
+                "Map render in test",
+            ).assertIsDisplayed()
+        }
+    }
+
     private fun fixtureViewModel() {
         viewModel = mockk(relaxed = true) {
             every { state } returns stateFlow
             every { uiEffect } returns uiEffectFlow as StateFlow<CitiesEffect>
             every { paginatedCities } returns pagingFlow as StateFlow<PagingData<City>>
         }
+    }
+
+    companion object {
+        @JvmStatic
+        @ParameterizedRobolectricTestRunner.Parameters(name = "Qualifier={0}")
+        fun data() = listOf(
+            DeviceQualifiers.TabletLandscape,
+            DeviceQualifiers.PhonePortrait,
+            DeviceQualifiers.TabletPortrait
+        )
     }
 }

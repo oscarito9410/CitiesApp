@@ -30,6 +30,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class CitiesViewModelTest {
@@ -77,6 +78,21 @@ class CitiesViewModelTest {
 
         // then
         assertEquals("cdmx", viewModel.state.value.searchQuery)
+    }
+
+    @Test
+    fun `processIntent OnCitySelected sets city in state`() = runTest(dispatcher) {
+        // initial state
+        assertNull(viewModel.state.value.selectedCity)
+
+        // when
+        viewModel.processIntent(CitiesIntent.OnCitySelected(fakeCity))
+
+        // then
+        assertEquals(
+            fakeCity,
+            viewModel.state.value.selectedCity
+        )
     }
 
     @Test
