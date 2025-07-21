@@ -252,6 +252,7 @@ class CitiesScreenTest(
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun fixtureViewModel() {
         viewModel = mockk(relaxed = true) {
             every { state } returns stateFlow
