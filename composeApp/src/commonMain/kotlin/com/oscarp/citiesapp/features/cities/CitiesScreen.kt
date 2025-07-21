@@ -30,14 +30,18 @@ import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.paging.compose.itemKey
 import com.oscarp.citiesapp.domain.models.City
 import com.oscarp.citiesapp.ui.components.CityItem
+import com.oscarp.citiesapp.ui.components.CityMapDetail
 import com.oscarp.citiesapp.ui.components.SearchFilterBar
 import com.oscarp.citiesapp.ui.theme.Dimens
+import com.oscarp.citiesapp.ui.utils.DeviceLayoutMode
 import com.oscarp.citiesapp.ui.utils.MultiWindowSizeLayout
 import org.jetbrains.compose.resources.getString
 import org.koin.compose.koinInject
 
 const val RefreshLoadingIndicatorTag = "RefreshLoadingIndicator"
 const val CitiesListTag = "CitiesList"
+const val CityMapDetailTag = "CityMapDetail"
+const val SingleColumnCitiesListTag = "SingleColumnCitiesList"
 
 @Composable
 fun CitiesScreen(
@@ -49,61 +53,79 @@ fun CitiesScreen(
     val cities = viewModel.paginatedCities.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
-        viewModel.uiEffect.collect { effect ->
-            when (effect) {
-                is CitiesEffect.ShowSnackBar -> {
-                    with(effect.localizedMessage) {
-                        hostState?.showSnackbar(getString(resource))
-                    }
-                }
-
-                is CitiesEffect.RefreshCitiesPagination -> {
-                    cities.refresh()
-                }
-
-                else -> Unit
-            }
-        }
+        observeUiEffects(viewModel, cities, hostState)
     }
 
-    MultiWindowSizeLayout(
-        default = {
-            SinglePaneCitiesScreen(
+    val onSearchQueryChanged: (String) -> Unit = {
+        viewModel.processIntent(CitiesIntent.OnSearchQueryChanged(it))
+    }
+    val onShowFavoritesFilter: () -> Unit = {
+        viewModel.processIntent(CitiesIntent.OnShowFavoritesFilter)
+    }
+    val onToggleFavorite: (City) -> Unit = {
+        viewModel.processIntent(CitiesIntent.OnFavoriteToggled(it))
+    }
+
+    MultiWindowSizeLayout { layoutMode ->
+        val isSinglePane = layoutMode == DeviceLayoutMode.SINGLE_PANE
+        val onCitySelected: (City) -> Unit =
+            if (isSinglePane) {
+                onCityClicked
+            } else {
+                { viewModel.processIntent(CitiesIntent.OnCitySelected(it)) }
+            }
+
+        if (isSinglePane) {
+            SinglePaneCitiesScreenContent(
+                selectedCity = state.selectedCity,
                 searchQuery = state.searchQuery,
                 showOnlyFavorites = state.showOnlyFavorites,
-                onSearchQueryChanged = { query ->
-                    viewModel.processIntent(
-                        CitiesIntent.OnSearchQueryChanged(query)
-                    )
-                },
-                onShowFavoritesFilter = {
-                    viewModel.processIntent(
-                        CitiesIntent.OnShowFavoritesFilter
-                    )
-                },
+                onSearchQueryChanged = onSearchQueryChanged,
+                onShowFavoritesFilter = onShowFavoritesFilter,
                 cities = cities,
-                onCityClicked = onCityClicked,
-                onToggleFavorite = {
-                    viewModel.processIntent(
-                        CitiesIntent.OnFavoriteToggled(it)
-                    )
-                }
+                onCityClicked = onCitySelected,
+                onToggleFavorite = onToggleFavorite
             )
-        },
-        expanded = {
-            TwoPaneCitiesScreen()
-        },
-        portraitTablet = {
-            TwoPaneCitiesScreen()
-        },
-        landscapePhone = {
-            TwoPaneCitiesScreen()
+        } else {
+            TwoPaneCitiesScreenContent(
+                selectedCity = state.selectedCity,
+                searchQuery = state.searchQuery,
+                showOnlyFavorites = state.showOnlyFavorites,
+                onSearchQueryChanged = onSearchQueryChanged,
+                onShowFavoritesFilter = onShowFavoritesFilter,
+                cities = cities,
+                onCityClicked = onCitySelected,
+                onToggleFavorite = onToggleFavorite
+            )
         }
-    )
+    }
+}
+
+private suspend fun observeUiEffects(
+    viewModel: CitiesViewModel,
+    cities: LazyPagingItems<City>,
+    hostState: SnackbarHostState?
+) {
+    viewModel.uiEffect.collect { effect ->
+        when (effect) {
+            is CitiesEffect.ShowSnackBar -> {
+                with(effect.localizedMessage) {
+                    hostState?.showSnackbar(getString(resource))
+                }
+            }
+
+            is CitiesEffect.RefreshCitiesPagination -> {
+                cities.refresh()
+            }
+
+            else -> Unit
+        }
+    }
 }
 
 @Composable
-fun SinglePaneCitiesScreen(
+fun SinglePaneCitiesScreenContent(
+    selectedCity: City?,
     searchQuery: String,
     showOnlyFavorites: Boolean,
     onSearchQueryChanged: (String) -> Unit,
@@ -113,7 +135,10 @@ fun SinglePaneCitiesScreen(
     onToggleFavorite: (City) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(
+        modifier = modifier.fillMaxSize()
+            .testTag(SingleColumnCitiesListTag)
+    ) {
         SearchFilterBar(
             searchQuery = searchQuery,
             showOnlyFavorites = showOnlyFavorites,
@@ -126,8 +151,51 @@ fun SinglePaneCitiesScreen(
             cities = cities,
             onCityClicked = onCityClicked,
             onToggleFavorite = onToggleFavorite,
-            selectedCity = null
+            selectedCity = selectedCity
         )
+    }
+}
+
+@Composable
+fun TwoPaneCitiesScreenContent(
+    selectedCity: City? = null,
+    searchQuery: String,
+    showOnlyFavorites: Boolean,
+    onSearchQueryChanged: (String) -> Unit,
+    onShowFavoritesFilter: () -> Unit,
+    cities: LazyPagingItems<City>,
+    onCityClicked: (City) -> Unit,
+    onToggleFavorite: (City) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(modifier = modifier.fillMaxSize()) {
+        Column(modifier = Modifier.weight(1f)) {
+            SearchFilterBar(
+                searchQuery = searchQuery,
+                showOnlyFavorites = showOnlyFavorites,
+                onSearchQueryChanged = onSearchQueryChanged,
+                onShowFavoritesFilter = onShowFavoritesFilter,
+                modifier = Modifier.padding(Dimens.spacingLarge)
+            )
+
+            CitiesList(
+                cities = cities,
+                onCityClicked = onCityClicked,
+                onToggleFavorite = onToggleFavorite,
+                selectedCity = selectedCity
+            )
+        }
+        Box(
+            modifier = Modifier.weight(1f)
+        ) {
+            selectedCity?.let {
+                CityMapDetail(
+                    city = it,
+                    modifier = Modifier.fillMaxSize()
+                        .testTag(CityMapDetailTag)
+                )
+            }
+        }
     }
 }
 
@@ -273,18 +341,5 @@ fun ErrorListState(
             text = errorMessage,
             textAlign = TextAlign.Center
         )
-    }
-}
-
-@Composable
-fun TwoPaneCitiesScreen() {
-    Row(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text("I'm a column single pane")
-        }
-        Box(modifier = Modifier.weight(1f)) {
-            // Detail or info panel (optional)
-            Text("Select a city")
-        }
     }
 }

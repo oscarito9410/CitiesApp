@@ -1,4 +1,4 @@
-package com.oscarp.citiesapp.data.remote
+package com.oscarp.citiesapp.data.remote.client
 
 import io.ktor.client.HttpClient
 

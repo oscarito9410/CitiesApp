@@ -1,7 +1,7 @@
 package com.oscarp.citiesapp.data.mappers
 
 import com.oscarp.citiesapp.data.local.entities.CityEntity
-import com.oscarp.citiesapp.data.remote.CityDto
+import com.oscarp.citiesapp.data.remote.dtos.CityDto
 import com.oscarp.citiesapp.domain.models.City
 
 fun CityDto.mapEntity(): CityEntity = CityEntity(

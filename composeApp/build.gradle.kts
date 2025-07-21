@@ -73,6 +73,8 @@ kotlin {
             
             implementation(project(":data"))
             implementation(project(":domain"))
+
+            implementation("com.google.maps.android:maps-compose:6.7.0")
         }
 
         androidUnitTest.dependencies {
@@ -156,11 +158,12 @@ kover {
                         "com.oscarp.citiesapp.data.local.AppDatabaseConstructor*",
                         "com.oscarp.citiesapp.data.local.DatabaseBuilderKt*",
                         "com.oscarp.citiesapp.data.local.*Provider*",
-                        "com.oscarp.citiesapp.data.remote.KtorLogger",
-                        "com.oscarp.citiesapp.data.remote.KtorHttpClientProvider*",
+                        "com.oscarp.citiesapp.data.remote.client.KtorLogger",
+                        "com.oscarp.citiesapp.data.remote.client.KtorHttpClientProvider*",
                         "com.oscarp.citiesapp.data.remote.CityApiService",
                         "com.oscarp.citiesapp.data.remote.CityApiServiceImpl*",
                         "com.oscarp.citiesapp.ui.theme.*",
+                        "com.oscarp.citiesapp.ui.components.CityMapDetail*",
                         "com.oscarp.citiesapp.navigation.*",
                         "com.oscarp.citiesapp.App*",
                         "com.oscarp.citiesapp.ui.utils.MultiWindowSizeLayout*",

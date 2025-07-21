@@ -7,7 +7,7 @@ import com.oscarp.citiesapp.data.local.getCityDao
 import com.oscarp.citiesapp.data.local.getRoomDatabase
 import com.oscarp.citiesapp.data.remote.CityApiService
 import com.oscarp.citiesapp.data.remote.CityApiServiceImpl
-import com.oscarp.citiesapp.data.remote.KtorHttpClientProvider
+import com.oscarp.citiesapp.data.remote.client.KtorHttpClientProvider
 import com.oscarp.citiesapp.data.repositories.CityRepositoryImpl
 import com.oscarp.citiesapp.domain.di.DispatchersQualifier
 import com.oscarp.citiesapp.domain.factories.CitiesPagingSourceFactory

@@ -1,4 +1,4 @@
-package com.oscarp.citiesapp.data.remote
+package com.oscarp.citiesapp.data.remote.dtos
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

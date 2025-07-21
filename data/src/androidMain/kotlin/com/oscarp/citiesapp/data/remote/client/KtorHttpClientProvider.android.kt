@@ -1,7 +1,7 @@
-package com.oscarp.citiesapp.data.remote
+package com.oscarp.citiesapp.data.remote.client
 
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.darwin.Darwin
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.compression.ContentEncoding
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -12,12 +12,11 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-actual class KtorHttpClientProvider {
-    actual fun create(): HttpClient = HttpClient(Darwin) {
+actual class KtorHttpClientProvider actual constructor() {
+    actual fun create(): HttpClient = HttpClient(OkHttp) {
         install(ContentNegotiation) {
             json(Json { ignoreUnknownKeys = true })
         }
-
         install(ContentEncoding) {
             gzip()
         }

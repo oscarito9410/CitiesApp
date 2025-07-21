@@ -3,8 +3,8 @@ package com.oscarp.citiesapp.data.importers
 import app.cash.turbine.test
 import com.oscarp.citiesapp.data.local.dao.CityDao
 import com.oscarp.citiesapp.data.mappers.mapEntity
-import com.oscarp.citiesapp.data.remote.CityDto
-import com.oscarp.citiesapp.data.remote.CoordDto
+import com.oscarp.citiesapp.data.remote.dtos.CityDto
+import com.oscarp.citiesapp.data.remote.dtos.CoordDto
 import io.ktor.utils.io.ByteReadChannel
 import io.mockk.coEvery
 import io.mockk.coVerify
