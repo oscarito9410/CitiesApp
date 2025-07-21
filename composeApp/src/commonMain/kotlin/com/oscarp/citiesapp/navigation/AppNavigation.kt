@@ -9,16 +9,28 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.oscarp.citiesapp.features.cities.CitiesScreen
+import com.oscarp.citiesapp.features.mapdetail.MapDetailScreen
 import com.oscarp.citiesapp.features.synccities.SyncScreen
+import com.oscarp.citiesapp.mappers.toCityMapDetail
 import kotlinx.serialization.Serializable
 
-// Define navigation destinations using serializable classes
 @Serializable
 object CitiesDestination
 
 @Serializable
 object SyncCitiesDestination
+
+@Serializable
+data class CityMapDetail(
+    val id: Long,
+    val name: String,
+    val countryCode: String = "",
+    val latitude: Double,
+    val longitude: Double,
+    val isFavorite: Boolean = false
+)
 
 @Composable
 fun AppNavigation(
@@ -31,14 +43,22 @@ fun AppNavigation(
         startDestination = SyncCitiesDestination,
         modifier = Modifier.padding(contentPadding)
     ) {
-        // Sync Cities screen
         composable<SyncCitiesDestination> {
             SyncScreen(navController)
         }
 
-        // Cities screen
         composable<CitiesDestination> {
-            CitiesScreen(hostState = hostState)
+            CitiesScreen(hostState = hostState) {
+                navController.navigate(it.toCityMapDetail())
+            }
+        }
+
+        composable<CityMapDetail> { backStackEntry ->
+            val cityMapDetail = backStackEntry.toRoute<CityMapDetail>()
+            MapDetailScreen(
+                cityMapDetail,
+                onBack = { navController.popBackStack() },
+            )
         }
     }
 }

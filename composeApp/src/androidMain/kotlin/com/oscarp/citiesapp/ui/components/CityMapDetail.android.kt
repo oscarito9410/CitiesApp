@@ -14,13 +14,13 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberUpdatedMarkerState
-import com.oscarp.citiesapp.domain.models.City
+import com.oscarp.citiesapp.navigation.CityMapDetail
 
 const val ZoomKms = 50.0f
 
 @Composable
 actual fun CityMapDetail(
-    city: City,
+    cityMapDetail: CityMapDetail,
     modifier: Modifier
 ) {
     Box(
@@ -38,8 +38,8 @@ actual fun CityMapDetail(
         }
 
         val coordinates = LatLng(
-            city.latitude,
-            city.longitude
+            cityMapDetail.latitude,
+            cityMapDetail.longitude
         )
 
         val markerState = rememberUpdatedMarkerState(position = coordinates)
@@ -56,8 +56,8 @@ actual fun CityMapDetail(
         ) {
             Marker(
                 state = markerState,
-                title = city.name,
-                snippet = city.name
+                title = cityMapDetail.name,
+                snippet = cityMapDetail.countryCode
             )
         }
     }

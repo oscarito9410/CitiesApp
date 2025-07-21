@@ -3,7 +3,7 @@ package com.oscarp.citiesapp.ui.components
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.interop.UIKitView
-import com.oscarp.citiesapp.domain.models.City
+import com.oscarp.citiesapp.navigation.CityMapDetail
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.CoreLocation.CLLocationCoordinate2DMake
 import platform.MapKit.MKCoordinateRegionMakeWithDistance
@@ -16,7 +16,7 @@ const val ZoomKms = 5000.0
 @OptIn(ExperimentalForeignApi::class)
 @Composable
 actual fun CityMapDetail(
-    city: City,
+    cityMapDetail: CityMapDetail,
     modifier: Modifier
 ) {
     UIKitView(
@@ -27,7 +27,7 @@ actual fun CityMapDetail(
         update = { mapView ->
             // this update block is called whenever the composable recomposes.
 
-            val coordinates = CLLocationCoordinate2DMake(city.latitude, city.longitude)
+            val coordinates = CLLocationCoordinate2DMake(cityMapDetail.latitude, cityMapDetail.longitude)
 
             val region = MKCoordinateRegionMakeWithDistance(
                 centerCoordinate = coordinates,
@@ -38,8 +38,8 @@ actual fun CityMapDetail(
 
             val annotation = MKPointAnnotation().apply {
                 setCoordinate(coordinates)
-                setTitle(city.name)
-                setSubtitle(city.country)
+                setTitle(cityMapDetail.name)
+                setSubtitle(cityMapDetail.countryCode)
             }
 
             mapView.removeAnnotations(mapView.annotations)

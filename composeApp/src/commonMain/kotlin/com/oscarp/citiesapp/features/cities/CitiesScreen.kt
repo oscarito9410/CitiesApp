@@ -25,17 +25,22 @@ import androidx.compose.ui.text.style.TextAlign
 import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
 import app.cash.paging.LoadStateNotLoading
+import app.cash.paging.PagingData
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.paging.compose.itemKey
 import com.oscarp.citiesapp.domain.models.City
+import com.oscarp.citiesapp.mappers.toCityMapDetail
 import com.oscarp.citiesapp.ui.components.CityItem
 import com.oscarp.citiesapp.ui.components.CityMapDetail
 import com.oscarp.citiesapp.ui.components.SearchFilterBar
+import com.oscarp.citiesapp.ui.theme.AppTheme
 import com.oscarp.citiesapp.ui.theme.Dimens
 import com.oscarp.citiesapp.ui.utils.DeviceLayoutMode
 import com.oscarp.citiesapp.ui.utils.MultiWindowSizeLayout
+import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 const val RefreshLoadingIndicatorTag = "RefreshLoadingIndicator"
@@ -190,7 +195,7 @@ fun TwoPaneCitiesScreenContent(
         ) {
             selectedCity?.let {
                 CityMapDetail(
-                    city = it,
+                    cityMapDetail = it.toCityMapDetail(),
                     modifier = Modifier.fillMaxSize()
                         .testTag(CityMapDetailTag)
                 )
@@ -340,6 +345,66 @@ fun ErrorListState(
         Text(
             text = errorMessage,
             textAlign = TextAlign.Center
+        )
+    }
+}
+
+private val fakeCity = City(
+    id = 1L,
+    name = "Preview City",
+    latitude = 10.0,
+    longitude = 10.0,
+    isFavorite = true,
+    country = "MX"
+)
+
+@Composable
+private fun fakePagingItems(): LazyPagingItems<City> {
+    return flowOf(
+        PagingData.from(
+            listOf(fakeCity),
+            sourceLoadStates =
+            _root_ide_package_.app.cash.paging.LoadStates(
+                refresh = LoadStateNotLoading(false),
+                append = LoadStateNotLoading(false),
+                prepend = LoadStateNotLoading(false),
+            ),
+        ),
+    ).collectAsLazyPagingItems()
+}
+
+@Preview
+@Composable
+fun PreviewSinglePaneCitiesScreen() {
+    AppTheme {
+        SinglePaneCitiesScreenContent(
+            selectedCity = null,
+            searchQuery = "Preview",
+            showOnlyFavorites = true,
+            onSearchQueryChanged = {},
+            onShowFavoritesFilter = {},
+            cities = fakePagingItems(),
+            onCityClicked = {},
+            onToggleFavorite = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun TwoPaneLandscapePreview() {
+    AppTheme {
+        TwoPaneCitiesScreenContent(
+            selectedCity = fakeCity,
+            searchQuery = "Preview",
+            showOnlyFavorites = true,
+            onSearchQueryChanged = {},
+            onShowFavoritesFilter = {},
+            cities = fakePagingItems(),
+            onCityClicked = {},
+            onToggleFavorite = {},
+            modifier = Modifier
+                .fillMaxSize()
         )
     }
 }
