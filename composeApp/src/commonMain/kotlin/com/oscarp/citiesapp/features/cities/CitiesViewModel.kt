@@ -59,11 +59,11 @@ class CitiesViewModel(
             }
 
             is CitiesIntent.OnFavoriteToggled -> {
-                toggleFavorite(intent.city)
+                handleToggleFavorite(intent.city)
             }
 
             is CitiesIntent.OnCitySelected -> {
-                _state.update { it.copy(selectedCity = intent.city) }
+                handleCitySelected(intent.city, intent.isSinglePane)
             }
 
             CitiesIntent.OnShowFavoritesFilter -> {
@@ -72,7 +72,20 @@ class CitiesViewModel(
         }
     }
 
-    private fun toggleFavorite(city: City) {
+    private fun handleCitySelected(
+        city: City,
+        isSinglePane: Boolean
+    ) {
+        if (isSinglePane) {
+            _state.update { it.copy(selectedCity = city) }
+        } else {
+            viewModelScope.launch {
+                _uiEffect.emit(CitiesEffect.NavigateToCityDetails(city))
+            }
+        }
+    }
+
+    private fun handleToggleFavorite(city: City) {
         viewModelScope.launch {
             val cityId = city.id
             val newFavoriteStatus = !city.isFavorite

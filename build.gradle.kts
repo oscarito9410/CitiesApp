@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.kover)
     alias(libs.plugins.kotlinAndroid) apply false
+    id("org.sonarqube") version "6.2.0.5505"
 }
 
 detekt {
@@ -44,5 +45,46 @@ tasks {
         reports {
             sarif.required.set(true)
         }
+    }
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "oscarito9410_citiesapp")
+        property("sonar.organization", "oscarito9410")
+        property("sonar.host.url", "https://sonarcloud.io")
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            "${project(":composeApp").buildDir}/reports/kover/reportCoverage.xml"
+        )
+        property(
+            "sonar.coverage.exclusions",
+            listOf(
+                "**/di/**",
+                "**/*Module.*",
+                "**/AppDatabase*",
+                "**/AppDatabaseConstructor*",
+                "**/DatabaseBuilderKt*",
+                "**/*Provider*",
+                "**/KtorLogger.*",
+                "**/KtorHttpClientProvider*",
+                "**/CityApiService*",
+                "**/ui/theme/**",
+                "**/components/CityMapDetail*",
+                "**/MainActivity*",
+                "**/navigation/**",
+                "**/App*",
+                "**/utils/MultiWindowSizeLayout*",
+                "**/generated/resources/**",
+                "**/iosMain/**/CityDataImporterImpl.ios.kt",
+                "**/commonMain/**/CityFtsEntity.kt",
+                "**/androidMain/**/DatabaseBuilder.kt",
+                "**/iosMain/**/DatabaseBuilder.kt",
+                "**/iosMain/**/MainViewController.kt",
+                "**/iosMain/**/SharedViewModel.ios.kt",
+                "**/*Preview.kt",
+                "**/*.preview.kt"
+            ).joinToString(",")
+        )
     }
 }

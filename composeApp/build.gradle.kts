@@ -169,7 +169,9 @@ kover {
                         "com.oscarp.citiesapp.navigation.*",
                         "com.oscarp.citiesapp.App*",
                         "com.oscarp.citiesapp.ui.utils.MultiWindowSizeLayout*",
-                        "citiesapp.composeapp.generated.resources.*"
+                        "citiesapp.composeapp.generated.resources.*",
+                        "**/*Preview*",
+                        "**/*.preview.*"
                     )
                 )
             }

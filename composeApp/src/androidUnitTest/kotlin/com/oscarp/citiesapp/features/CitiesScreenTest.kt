@@ -13,6 +13,9 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
+import app.cash.paging.LoadStateError
+import app.cash.paging.LoadStateLoading
+import app.cash.paging.LoadStateNotLoading
 import app.cash.paging.PagingData
 import com.oscarp.citiesapp.domain.models.City
 import com.oscarp.citiesapp.features.cities.CitiesEffect
@@ -21,6 +24,7 @@ import com.oscarp.citiesapp.features.cities.CitiesScreen
 import com.oscarp.citiesapp.features.cities.CitiesViewModel
 import com.oscarp.citiesapp.features.cities.CitiesViewState
 import com.oscarp.citiesapp.features.cities.CityMapDetailTag
+import com.oscarp.citiesapp.features.cities.RefreshLoadingIndicatorTag
 import com.oscarp.citiesapp.features.cities.SingleColumnCitiesListTag
 import com.oscarp.citiesapp.testutil.DeviceQualifiers
 import com.oscarp.citiesapp.testutil.RobolectricComposeTest
@@ -127,7 +131,7 @@ class CitiesScreenTest(
 
             setContent {
                 AppTheme {
-                    CitiesScreen(viewModel = viewModel, onCityClicked = {})
+                    CitiesScreen(viewModel = viewModel, onCityDetailNavigation = {})
                 }
             }
 
@@ -153,7 +157,10 @@ class CitiesScreenTest(
 
         setContent {
             AppTheme {
-                CitiesScreen(viewModel = viewModel, onCityClicked = {})
+                CitiesScreen(
+                    viewModel = viewModel,
+                    onCityDetailNavigation = {}
+                )
             }
         }
 
@@ -173,7 +180,7 @@ class CitiesScreenTest(
 
         setContent {
             AppTheme {
-                CitiesScreen(viewModel = viewModel, onCityClicked = {})
+                CitiesScreen(viewModel = viewModel, onCityDetailNavigation = {})
             }
         }
 
@@ -204,7 +211,7 @@ class CitiesScreenTest(
                 CitiesScreen(
                     viewModel = viewModel,
                     hostState = hostState,
-                    onCityClicked = {}
+                    onCityDetailNavigation = {}
                 )
             }
         }
@@ -250,6 +257,112 @@ class CitiesScreenTest(
                 "Map render in test",
             ).assertIsDisplayed()
         }
+    }
+
+    @Test
+    fun shows_refresh_loading_state_when_is_loading() = runComposeUiTest {
+        testScope.runTest {
+            pagingFlow.emit(
+                PagingData.from(
+                    listOf(fakeCity),
+                    sourceLoadStates = app.cash.paging.LoadStates(
+                        refresh = LoadStateLoading,
+                        prepend = LoadStateNotLoading(
+                            endOfPaginationReached = true
+                        ),
+                        append = LoadStateNotLoading(endOfPaginationReached = true),
+                    )
+                )
+            )
+
+            stateFlow.emit(CitiesViewState(isLoading = true))
+        }
+
+        setContent {
+            AppTheme {
+                CitiesScreen(viewModel = viewModel)
+            }
+        }
+
+        onNodeWithTag(RefreshLoadingIndicatorTag).assertIsDisplayed()
+    }
+
+    @Test
+    fun shows_append_loading_state_when_is_loading() = runComposeUiTest {
+        testScope.runTest {
+            pagingFlow.emit(
+                PagingData.from(
+                    listOf(fakeCity),
+                    sourceLoadStates = app.cash.paging.LoadStates(
+                        refresh = LoadStateNotLoading(endOfPaginationReached = true),
+                        prepend = LoadStateNotLoading(
+                            endOfPaginationReached = true
+                        ),
+                        append = LoadStateLoading,
+                    )
+                )
+            )
+
+            stateFlow.emit(CitiesViewState(isLoading = true))
+        }
+    }
+
+    @Test
+    fun shows_error_state_when_append() = runComposeUiTest {
+        testScope.runTest {
+            pagingFlow.emit(
+                PagingData.from(
+                    listOf(fakeCity),
+                    sourceLoadStates = app.cash.paging.LoadStates(
+                        refresh = LoadStateNotLoading(endOfPaginationReached = true),
+                        prepend = LoadStateNotLoading(
+                            endOfPaginationReached = true
+                        ),
+                        append = LoadStateError(Exception("IO error"))
+                    )
+                )
+            )
+
+            stateFlow.emit(CitiesViewState(isLoading = true))
+        }
+
+        setContent {
+            AppTheme {
+                CitiesScreen(viewModel = viewModel)
+            }
+        }
+
+        onNodeWithText("IO error").assertIsDisplayed()
+    }
+
+    @Test
+    fun shows_error_state_when_refresh() = runComposeUiTest {
+        testScope.runTest {
+            pagingFlow.emit(
+                PagingData.from(
+                    listOf(fakeCity),
+                    sourceLoadStates = app.cash.paging.LoadStates(
+                        refresh = LoadStateError(Exception("IO error")),
+                        prepend = LoadStateNotLoading(
+                            endOfPaginationReached = true
+                        ),
+                        append = LoadStateNotLoading(
+                            endOfPaginationReached = true
+                        )
+                    )
+                )
+            )
+
+            stateFlow.emit(CitiesViewState(isLoading = true))
+        }
+
+        setContent {
+            AppTheme {
+                CitiesScreen(viewModel = viewModel)
+            }
+        }
+
+        onNodeWithText("IO error").assertIsDisplayed()
     }
 
     @Suppress("UNCHECKED_CAST")
