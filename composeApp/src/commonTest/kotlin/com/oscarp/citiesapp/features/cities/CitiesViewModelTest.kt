@@ -3,6 +3,7 @@
 package com.oscarp.citiesapp.features.cities
 
 import app.cash.paging.PagingData
+import app.cash.turbine.test
 import com.oscarp.citiesapp.domain.exceptions.CityNotFoundException
 import com.oscarp.citiesapp.domain.models.City
 import com.oscarp.citiesapp.domain.usecases.GetPaginatedCitiesUseCase
@@ -147,77 +148,50 @@ class CitiesViewModelTest {
         }
 
     @Test
-    fun `toggleFavorite success does NOT emit effect when adding to favorites`() =
-        runTest(dispatcher) {
-            // given
-            val emittedEffects = mutableListOf<CitiesEffect>()
-            val collectorJob = launch {
-                viewModel.uiEffect.collect { emittedEffects.add(it) }
-            }
-            val nonFavoriteCity = fakeCity.copy(isFavorite = false)
-            everySuspend { toggleFavoriteUseCase(nonFavoriteCity.id) } returns true
+    fun `toggleFavorite success does NOT emit effect when adding to favorites`() = runTest(dispatcher) {
+        // given
+        val nonFavoriteCity = fakeCity.copy(isFavorite = false)
+        everySuspend { toggleFavoriteUseCase(nonFavoriteCity.id) } returns true
 
-            // when
+        // when & then
+        viewModel.uiEffect.test {
             viewModel.processIntent(CitiesIntent.OnFavoriteToggled(nonFavoriteCity))
             advanceUntilIdle()
 
-            // then
-            assertTrue(
-                emittedEffects.isEmpty(),
-                "no effects should be emitted when adding a favorite"
-            )
-
-            collectorJob.cancel()
+            expectNoEvents()
+            cancelAndIgnoreRemainingEvents()
         }
+    }
 
     @Test
-    fun `toggleFavorite failure emits FailedToUpdateFavoriteStatus snackbar`() =
-        runTest(dispatcher) {
-            // given
-            val emittedEffects = mutableListOf<CitiesEffect>()
-            val collectorJob = launch {
-                viewModel.uiEffect.collect { emittedEffects.add(it) }
-            }
-            everySuspend { toggleFavoriteUseCase(fakeCity.id) } returns false
+    fun `toggleFavorite failure emits FailedToUpdateFavoriteStatus snackbar`() = runTest(dispatcher) {
+        // given
+        everySuspend { toggleFavoriteUseCase(fakeCity.id) } returns false
 
-            // when
+        // when & then
+        viewModel.uiEffect.test {
             viewModel.processIntent(CitiesIntent.OnFavoriteToggled(fakeCity))
             advanceUntilIdle()
 
-            // then
-            val expectedEffect =
-                CitiesEffect.ShowSnackBar(LocalizedMessage.FailedToUpdateFavoriteStatus)
-            assertEquals(
-                expectedEffect,
-                emittedEffects.first(),
-                "FailedToUpdate snackbar should be shown"
-            )
-
-            collectorJob.cancel()
+            val expected = CitiesEffect.ShowSnackBar(LocalizedMessage.FailedToUpdateFavoriteStatus)
+            assertEquals(expected, awaitItem())
+            cancelAndIgnoreRemainingEvents()
         }
+    }
 
     @Test
-    fun `toggleFavorite throws CityNotFoundException emits CityNotFound snackbar`() =
-        runTest(dispatcher) {
-            // given
-            val emittedEffects = mutableListOf<CitiesEffect>()
-            val collectorJob = launch {
-                viewModel.uiEffect.collect { emittedEffects.add(it) }
-            }
-            everySuspend { toggleFavoriteUseCase(fakeCity.id) } throws CityNotFoundException("No city found")
+    fun `toggleFavorite throws CityNotFoundException emits CityNotFound snackbar`() = runTest(dispatcher) {
+        // given
+        everySuspend { toggleFavoriteUseCase(fakeCity.id) } throws CityNotFoundException("No city found")
 
-            // when
+        // when & then
+        viewModel.uiEffect.test {
             viewModel.processIntent(CitiesIntent.OnFavoriteToggled(fakeCity))
             advanceUntilIdle()
 
-            // then
-            val expectedEffect = CitiesEffect.ShowSnackBar(LocalizedMessage.CityNotFound)
-            assertEquals(
-                expectedEffect,
-                emittedEffects.first(),
-                "CityNotFound snackbar should be shown"
-            )
-
-            collectorJob.cancel()
+            val expected = CitiesEffect.ShowSnackBar(LocalizedMessage.CityNotFound)
+            assertEquals(expected, awaitItem())
+            cancelAndIgnoreRemainingEvents()
         }
+    }
 }

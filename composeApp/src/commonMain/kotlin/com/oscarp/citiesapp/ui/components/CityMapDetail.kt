@@ -2,10 +2,10 @@ package com.oscarp.citiesapp.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.oscarp.citiesapp.domain.models.City
+import com.oscarp.citiesapp.navigation.CityMapDetail
 
 @Composable
 expect fun CityMapDetail(
-    city: City,
+    cityMapDetail: CityMapDetail,
     modifier: Modifier = Modifier
 )
