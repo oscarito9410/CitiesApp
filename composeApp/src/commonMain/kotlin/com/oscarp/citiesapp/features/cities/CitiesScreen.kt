@@ -364,7 +364,7 @@ private fun fakePagingItems(): LazyPagingItems<City> {
         PagingData.from(
             listOf(fakeCity),
             sourceLoadStates =
-            _root_ide_package_.app.cash.paging.LoadStates(
+            app.cash.paging.LoadStates(
                 refresh = LoadStateNotLoading(false),
                 append = LoadStateNotLoading(false),
                 prepend = LoadStateNotLoading(false),
