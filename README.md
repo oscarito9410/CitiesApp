@@ -1,3 +1,5 @@
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=oscarito9410_citiesapp&metric=coverage)](https://sonarcloud.io/summary/new_code?id=oscarito9410_citiesapp)
+
 This is a Kotlin Multiplatform project targeting Android, iOS.
 
 * `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
