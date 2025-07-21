@@ -190,37 +190,11 @@ private fun CompletedContent() {
 
 @Preview
 @Composable
-fun PreviewSyncContent_Loading_Getting() {
-    SyncContent(
-        state = SyncViewState(
-            isLoading = true,
-            percentSync = 0
-        ),
-        onLoad = {},
-        onRetry = {}
-    )
-}
-
-@Preview
-@Composable
 fun PreviewSyncContent_Loading_Saving() {
     SyncContent(
         state = SyncViewState(
             isLoading = true,
             percentSync = 65
-        ),
-        onLoad = {},
-        onRetry = {}
-    )
-}
-
-@Preview
-@Composable
-fun PreviewSyncContent_NoInternet() {
-    SyncContent(
-        state = SyncViewState(
-            isNoInternet = true,
-            isError = false
         ),
         onLoad = {},
         onRetry = {}
