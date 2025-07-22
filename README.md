@@ -3,6 +3,7 @@
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-light.svg)](https://sonarcloud.io/summary/new_code?id=oscarito9410_citiesapp)
 
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=oscarito9410_citiesapp&metric=coverage)](https://sonarcloud.io/summary/new_code?id=oscarito9410_citiesapp)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=oscarito9410_citiesapp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=oscarito9410_citiesapp)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=oscarito9410_citiesapp&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=oscarito9410_citiesapp)
 
 
