@@ -23,11 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import citiesapp.composeapp.generated.resources.Res
-import citiesapp.composeapp.generated.resources.clear_search
-import citiesapp.composeapp.generated.resources.search_cities
-import citiesapp.composeapp.generated.resources.search_icon
-import citiesapp.composeapp.generated.resources.search_placeholder
+import citiesapp.composeapp.generated.resources.action_clear_search
+import citiesapp.composeapp.generated.resources.placeholder_search
+import citiesapp.composeapp.generated.resources.search_icon_content_description
 import citiesapp.composeapp.generated.resources.show_only_favorites
+import citiesapp.composeapp.generated.resources.title_search_cities
 import com.oscarp.citiesapp.ui.theme.Dimens
 import org.jetbrains.compose.resources.stringResource
 
@@ -50,12 +50,12 @@ fun SearchFilterBar(
             value = searchQuery,
             onValueChange = onSearchQueryChanged,
             singleLine = true,
-            label = { Text(stringResource(Res.string.search_cities)) },
-            placeholder = { Text(stringResource(Res.string.search_placeholder)) },
+            label = { Text(stringResource(Res.string.title_search_cities)) },
+            placeholder = { Text(stringResource(Res.string.placeholder_search)) },
             leadingIcon = {
                 Icon(
                     Icons.Default.Search,
-                    contentDescription = stringResource(Res.string.search_icon)
+                    contentDescription = stringResource(Res.string.search_icon_content_description)
                 )
             },
             trailingIcon = {
@@ -66,7 +66,7 @@ fun SearchFilterBar(
                     ) {
                         Icon(
                             Icons.Default.Clear,
-                            contentDescription = stringResource(Res.string.clear_search)
+                            contentDescription = stringResource(Res.string.action_clear_search)
                         )
                     }
                 }

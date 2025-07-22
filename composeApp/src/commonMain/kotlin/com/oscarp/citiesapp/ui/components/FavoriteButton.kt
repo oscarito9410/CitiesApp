@@ -10,8 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import citiesapp.composeapp.generated.resources.Res
-import citiesapp.composeapp.generated.resources.add_to_favorites
-import citiesapp.composeapp.generated.resources.remove_from_favorites
+import citiesapp.composeapp.generated.resources.button_text_add_to_favorites
+import citiesapp.composeapp.generated.resources.button_text_remove_from_favorites
 import com.oscarp.citiesapp.domain.models.City
 import org.jetbrains.compose.resources.stringResource
 
@@ -30,9 +30,9 @@ fun FavoriteButton(
         val isFavorite = city.isFavorite
         val icon = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder
         val contentDescription = if (isFavorite) {
-            stringResource(Res.string.remove_from_favorites)
+            stringResource(Res.string.button_text_remove_from_favorites)
         } else {
-            stringResource(Res.string.add_to_favorites)
+            stringResource(Res.string.button_text_add_to_favorites)
         }
         val tint = if (isFavorite) {
             MaterialTheme.colorScheme.error

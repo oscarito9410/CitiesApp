@@ -1,7 +1,7 @@
 package com.oscarp.citiesapp.ui.resourcemanager
 
 import citiesapp.composeapp.generated.resources.Res
-import citiesapp.composeapp.generated.resources.city_not_found
+import citiesapp.composeapp.generated.resources.error_city_not_found
 import citiesapp.composeapp.generated.resources.failed_to_update_favorite_status
 import org.jetbrains.compose.resources.StringResource
 
@@ -15,6 +15,6 @@ sealed class LocalizedMessage(val resource: StringResource) {
     )
 
     object CityNotFound : LocalizedMessage(
-        resource = Res.string.city_not_found
+        resource = Res.string.error_city_not_found
     )
 }

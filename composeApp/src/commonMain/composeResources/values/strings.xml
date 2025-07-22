@@ -9,21 +9,22 @@
 
 
     <!-- City List -->
-    <string name="cities_found">%1$d ciudades encontradas</string>
-    <string name="distance_away">A %.1f km de distancia</string>
-    <string name="add_to_favorites">Agregar a favoritos</string>
-    <string name="remove_from_favorites">Quitar de favoritos</string>
-    <string name="weather_info">Ver información del clima</string>
+    <string name="text_cities_found">%1$d ciudades encontradas</string>
+    <string name="text_distance_away">A %.1f km de distancia</string>
+    <string name="button_text_add_to_favorites">Agregar a favoritos</string>
+    <string name="button_text_remove_from_favorites">Quitar de favoritos</string>
+    <string name="text_empty_state_no_cities_found">No se encontraron ciudades para tu consulta</string>"
+    <string name="text_empty_state_select_city">Selecciona una ciudad</string>
 
     <!-- Search and Filter -->
-    <string name="search_cities">Buscar ciudades</string>
-    <string name="search_icon">Buscar</string>
-    <string name="search_placeholder">Escribe el nombre de la ciudad…</string>
+    <string name="title_search_cities">Buscar ciudades</string>
+    <string name="search_icon_content_description">Buscar</string>
+    <string name="placeholder_search">Escribe el nombre de la ciudad…</string>
     <string name="show_only_favorites">Mostrar solo favoritos</string>
-    <string name="clear_search">Limpiar búsqueda</string>
+    <string name="action_clear_search">Limpiar búsqueda</string>
 
     <string name="favorite_status_updated">Favorito actualizado!</string>
     <string name="failed_to_update_favorite_status">No se pudo actualizar el estado favorito.</string>
-    <string name="city_not_found">Ciudad no encontrada</string>
+    <string name="error_city_not_found">Ciudad no encontrada</string>
     <string name="unexpected_error">Error inesperado</string>
 </resources>

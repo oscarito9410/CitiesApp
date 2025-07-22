@@ -28,6 +28,9 @@ import app.cash.paging.LoadStateNotLoading
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.paging.compose.itemKey
+import citiesapp.composeapp.generated.resources.Res
+import citiesapp.composeapp.generated.resources.text_empty_state_no_cities_found
+import citiesapp.composeapp.generated.resources.text_empty_state_select_city
 import com.oscarp.citiesapp.domain.models.City
 import com.oscarp.citiesapp.mappers.toCityMapDetail
 import com.oscarp.citiesapp.ui.components.CityItem
@@ -37,6 +40,7 @@ import com.oscarp.citiesapp.ui.theme.Dimens
 import com.oscarp.citiesapp.ui.utils.DeviceLayoutMode
 import com.oscarp.citiesapp.ui.utils.MultiWindowSizeLayout
 import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
 const val RefreshLoadingIndicatorTag = "RefreshLoadingIndicator"
@@ -44,6 +48,8 @@ const val AppendLoadingIndicatorTag = "AppendLoadingIndicator"
 const val CitiesListTag = "CitiesList"
 const val CityMapDetailTag = "CityMapDetail"
 const val SingleColumnCitiesListTag = "SingleColumnCitiesList"
+const val EmptyCitiesListTag = "EmptyCitiesList"
+const val EmptyCitySelectedTag = "EmptyCitySelected"
 
 @Composable
 fun CitiesScreen(
@@ -209,7 +215,11 @@ fun TwoPaneCitiesScreenContent(
                     modifier = Modifier.fillMaxSize()
                         .testTag(CityMapDetailTag)
                 )
-            }
+            } ?: EmptyListState(
+                text = stringResource(Res.string.text_empty_state_select_city),
+                modifier = Modifier.fillMaxSize()
+                    .testTag(EmptyCitySelectedTag)
+            )
         }
     }
 }
@@ -298,7 +308,9 @@ private fun LazyListScope.citiesLoadState(
             isEmptyListAndNotLoadingOrError -> {
                 item {
                     EmptyListState(
+                        text = stringResource(Res.string.text_empty_state_no_cities_found),
                         modifier = Modifier.fillMaxSize()
+                            .testTag(EmptyCitiesListTag)
                             .animateItem()
                     )
                 }
@@ -332,13 +344,16 @@ fun AppendLoadingState(modifier: Modifier) {
 }
 
 @Composable
-fun EmptyListState(modifier: Modifier) {
+fun EmptyListState(
+    text: String = "",
+    modifier: Modifier,
+) {
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "No Items",
+            text = text,
             textAlign = TextAlign.Center
         )
     }

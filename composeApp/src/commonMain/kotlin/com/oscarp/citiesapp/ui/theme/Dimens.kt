@@ -12,16 +12,4 @@ object Dimens {
     val spacingXxl = 32.dp
     val spacingXxxl = 48.dp
     val spacingXxxxl = 64.dp
-
-    // Permission UI
-    val permissionButtonIconSize = 18.dp
-
-    // Map Specific
-    val mapHeight = 400.dp
-}
-
-object Strings {
-    // Coordinate Format
-    const val coordinateFormat4 = "%.4f, %.4f"
-    const val coordinateFormat6 = "%.6f"
 }
