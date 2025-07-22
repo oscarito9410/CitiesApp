@@ -92,6 +92,8 @@ paging-compose-common = { module = "app.cash.paging:paging-compose-common", vers
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "composeMultiplatform" }
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "composeMultiplatform" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+androidx-paging-testing = { module = "androidx.paging:paging-testing", version = "3.3.6" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
