@@ -25,7 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
 import app.cash.paging.LoadStateNotLoading
-import app.cash.paging.PagingData
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.paging.compose.itemKey
@@ -34,16 +33,14 @@ import com.oscarp.citiesapp.mappers.toCityMapDetail
 import com.oscarp.citiesapp.ui.components.CityItem
 import com.oscarp.citiesapp.ui.components.CityMapDetail
 import com.oscarp.citiesapp.ui.components.SearchFilterBar
-import com.oscarp.citiesapp.ui.theme.AppTheme
 import com.oscarp.citiesapp.ui.theme.Dimens
 import com.oscarp.citiesapp.ui.utils.DeviceLayoutMode
 import com.oscarp.citiesapp.ui.utils.MultiWindowSizeLayout
-import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.compose.resources.getString
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 const val RefreshLoadingIndicatorTag = "RefreshLoadingIndicator"
+const val AppendLoadingIndicatorTag = "AppendLoadingIndicator"
 const val CitiesListTag = "CitiesList"
 const val CityMapDetailTag = "CityMapDetail"
 const val SingleColumnCitiesListTag = "SingleColumnCitiesList"
@@ -52,13 +49,18 @@ const val SingleColumnCitiesListTag = "SingleColumnCitiesList"
 fun CitiesScreen(
     viewModel: CitiesViewModel = koinInject(),
     hostState: SnackbarHostState? = null,
-    onCityClicked: (City) -> Unit = {},
+    onCityDetailNavigation: (City) -> Unit = {},
 ) {
     val state by viewModel.state.collectAsState()
     val cities = viewModel.paginatedCities.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
-        observeUiEffects(viewModel, cities, hostState)
+        observeUiEffects(
+            viewModel,
+            cities,
+            hostState,
+            onCityDetailNavigation
+        )
     }
 
     val onSearchQueryChanged: (String) -> Unit = {
@@ -74,10 +76,13 @@ fun CitiesScreen(
     MultiWindowSizeLayout { layoutMode ->
         val isSinglePane = layoutMode == DeviceLayoutMode.SINGLE_PANE
         val onCitySelected: (City) -> Unit =
-            if (isSinglePane) {
-                onCityClicked
-            } else {
-                { viewModel.processIntent(CitiesIntent.OnCitySelected(it)) }
+            {
+                viewModel.processIntent(
+                    CitiesIntent.OnCitySelected(
+                        it,
+                        isSinglePane
+                    )
+                )
             }
 
         if (isSinglePane) {
@@ -109,7 +114,8 @@ fun CitiesScreen(
 private suspend fun observeUiEffects(
     viewModel: CitiesViewModel,
     cities: LazyPagingItems<City>,
-    hostState: SnackbarHostState?
+    hostState: SnackbarHostState?,
+    onCityDetailNavigation: (City) -> Unit
 ) {
     viewModel.uiEffect.collect { effect ->
         when (effect) {
@@ -121,6 +127,10 @@ private suspend fun observeUiEffects(
 
             is CitiesEffect.RefreshCitiesPagination -> {
                 cities.refresh()
+            }
+
+            is CitiesEffect.NavigateToCityDetails -> {
+                onCityDetailNavigation(effect.city)
             }
 
             else -> Unit
@@ -259,6 +269,7 @@ private fun LazyListScope.citiesLoadState(
                     AppendLoadingState(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .testTag(AppendLoadingIndicatorTag)
                             .padding(Dimens.spacingLarge),
                     )
                 }
@@ -345,66 +356,6 @@ fun ErrorListState(
         Text(
             text = errorMessage,
             textAlign = TextAlign.Center
-        )
-    }
-}
-
-private val fakeCity = City(
-    id = 1L,
-    name = "Preview City",
-    latitude = 10.0,
-    longitude = 10.0,
-    isFavorite = true,
-    country = "MX"
-)
-
-@Composable
-private fun fakePagingItems(): LazyPagingItems<City> {
-    return flowOf(
-        PagingData.from(
-            listOf(fakeCity),
-            sourceLoadStates =
-            app.cash.paging.LoadStates(
-                refresh = LoadStateNotLoading(false),
-                append = LoadStateNotLoading(false),
-                prepend = LoadStateNotLoading(false),
-            ),
-        ),
-    ).collectAsLazyPagingItems()
-}
-
-@Preview
-@Composable
-fun PreviewSinglePaneCitiesScreen() {
-    AppTheme {
-        SinglePaneCitiesScreenContent(
-            selectedCity = null,
-            searchQuery = "Preview",
-            showOnlyFavorites = true,
-            onSearchQueryChanged = {},
-            onShowFavoritesFilter = {},
-            cities = fakePagingItems(),
-            onCityClicked = {},
-            onToggleFavorite = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-fun TwoPaneLandscapePreview() {
-    AppTheme {
-        TwoPaneCitiesScreenContent(
-            selectedCity = fakeCity,
-            searchQuery = "Preview",
-            showOnlyFavorites = true,
-            onSearchQueryChanged = {},
-            onShowFavoritesFilter = {},
-            cities = fakePagingItems(),
-            onCityClicked = {},
-            onToggleFavorite = {},
-            modifier = Modifier
-                .fillMaxSize()
         )
     }
 }

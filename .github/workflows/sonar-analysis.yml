@@ -1,0 +1,23 @@
+name: 🔍 Sonar Analysis
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  sonar:
+    name: 🔍 Run SonarQube
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-gradle
+
+      - name: Run Kover + Sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew koverXmlReportCoverage sonar

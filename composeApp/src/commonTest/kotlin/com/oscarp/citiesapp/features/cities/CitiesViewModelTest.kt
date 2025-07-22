@@ -18,7 +18,6 @@ import dev.mokkery.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -78,22 +77,53 @@ class CitiesViewModelTest {
         advanceTimeBy(350)
 
         // then
-        assertEquals("cdmx", viewModel.state.value.searchQuery)
+        assertEquals(
+            "cdmx",
+            viewModel.state.value.searchQuery
+        )
     }
 
     @Test
-    fun `processIntent OnCitySelected sets city in state`() = runTest(dispatcher) {
+    fun `processIntent OnCitySelected sets city in state when single pane`() = runTest(dispatcher) {
         // initial state
         assertNull(viewModel.state.value.selectedCity)
 
         // when
-        viewModel.processIntent(CitiesIntent.OnCitySelected(fakeCity))
+        viewModel.processIntent(
+            CitiesIntent.OnCitySelected(
+                fakeCity,
+                isSinglePane = true
+            )
+        )
 
         // then
         assertEquals(
             fakeCity,
             viewModel.state.value.selectedCity
         )
+    }
+
+    @Test
+    fun `processIntent OnCitySelected sets city in state when two pane`() = runTest(dispatcher) {
+        // initial state
+        assertNull(viewModel.state.value.selectedCity)
+
+        // when & then
+        viewModel.uiEffect.test {
+            viewModel.processIntent(
+                CitiesIntent.OnCitySelected(
+                    fakeCity,
+                    isSinglePane = false
+                )
+            )
+            advanceUntilIdle()
+            val effect = awaitItem()
+            assertIs<CitiesEffect.NavigateToCityDetails>(
+                effect,
+                "the effect should be NavigateToCityDetails"
+            )
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -122,76 +152,74 @@ class CitiesViewModelTest {
     @Test
     fun `toggleFavorite success emits RefreshCitiesPagination when removing from favorites with filter on`() =
         runTest(dispatcher) {
-            // arrange: Collect effects to assert them later
-            val emittedEffects = mutableListOf<CitiesEffect>()
-            val collectorJob = launch {
-                viewModel.uiEffect.collect { emittedEffects.add(it) }
-            }
-
-            // arrange: Set up the conditions for the test
+            // given
             val favoriteCity = fakeCity.copy(isFavorite = true)
             everySuspend { toggleFavoriteUseCase(favoriteCity.id) } returns true
-            viewModel.processIntent(CitiesIntent.OnShowFavoritesFilter) // Turn on the favorite filter
+            viewModel.processIntent(CitiesIntent.OnShowFavoritesFilter)
 
-            // act: Toggle the favorite off
+            // when
             viewModel.processIntent(CitiesIntent.OnFavoriteToggled(favoriteCity))
-            advanceUntilIdle() // Ensure the coroutine in the ViewModel completes
 
-            // assert
-            assertTrue(emittedEffects.isNotEmpty(), "ui effect should have been emitted")
-            assertIs<CitiesEffect.RefreshCitiesPagination>(
-                emittedEffects.first(),
-                "the effect should be RefreshCitiesPagination"
-            )
-
-            collectorJob.cancel()
+            // then
+            viewModel.uiEffect.test {
+                val effect = awaitItem()
+                assertIs<CitiesEffect.RefreshCitiesPagination>(
+                    effect,
+                    "the effect should be RefreshCitiesPagination"
+                )
+                cancelAndIgnoreRemainingEvents()
+            }
         }
 
     @Test
-    fun `toggleFavorite success does NOT emit effect when adding to favorites`() = runTest(dispatcher) {
-        // given
-        val nonFavoriteCity = fakeCity.copy(isFavorite = false)
-        everySuspend { toggleFavoriteUseCase(nonFavoriteCity.id) } returns true
+    fun `toggleFavorite success does NOT emit effect when adding to favorites`() =
+        runTest(dispatcher) {
+            // given
+            val nonFavoriteCity = fakeCity.copy(isFavorite = false)
+            everySuspend { toggleFavoriteUseCase(nonFavoriteCity.id) } returns true
 
-        // when & then
-        viewModel.uiEffect.test {
-            viewModel.processIntent(CitiesIntent.OnFavoriteToggled(nonFavoriteCity))
-            advanceUntilIdle()
+            // when & then
+            viewModel.uiEffect.test {
+                viewModel.processIntent(CitiesIntent.OnFavoriteToggled(nonFavoriteCity))
+                advanceUntilIdle()
 
-            expectNoEvents()
-            cancelAndIgnoreRemainingEvents()
+                expectNoEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `toggleFavorite failure emits FailedToUpdateFavoriteStatus snackbar`() = runTest(dispatcher) {
-        // given
-        everySuspend { toggleFavoriteUseCase(fakeCity.id) } returns false
+    fun `toggleFavorite failure emits FailedToUpdateFavoriteStatus snackbar`() =
+        runTest(dispatcher) {
+            // given
+            everySuspend { toggleFavoriteUseCase(fakeCity.id) } returns false
 
-        // when & then
-        viewModel.uiEffect.test {
-            viewModel.processIntent(CitiesIntent.OnFavoriteToggled(fakeCity))
-            advanceUntilIdle()
+            // when & then
+            viewModel.uiEffect.test {
+                viewModel.processIntent(CitiesIntent.OnFavoriteToggled(fakeCity))
+                advanceUntilIdle()
 
-            val expected = CitiesEffect.ShowSnackBar(LocalizedMessage.FailedToUpdateFavoriteStatus)
-            assertEquals(expected, awaitItem())
-            cancelAndIgnoreRemainingEvents()
+                val expected =
+                    CitiesEffect.ShowSnackBar(LocalizedMessage.FailedToUpdateFavoriteStatus)
+                assertEquals(expected, awaitItem())
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 
     @Test
-    fun `toggleFavorite throws CityNotFoundException emits CityNotFound snackbar`() = runTest(dispatcher) {
-        // given
-        everySuspend { toggleFavoriteUseCase(fakeCity.id) } throws CityNotFoundException("No city found")
+    fun `toggleFavorite throws CityNotFoundException emits CityNotFound snackbar`() =
+        runTest(dispatcher) {
+            // given
+            everySuspend { toggleFavoriteUseCase(fakeCity.id) } throws CityNotFoundException("No city found")
 
-        // when & then
-        viewModel.uiEffect.test {
-            viewModel.processIntent(CitiesIntent.OnFavoriteToggled(fakeCity))
-            advanceUntilIdle()
+            // when & then
+            viewModel.uiEffect.test {
+                viewModel.processIntent(CitiesIntent.OnFavoriteToggled(fakeCity))
+                advanceUntilIdle()
 
-            val expected = CitiesEffect.ShowSnackBar(LocalizedMessage.CityNotFound)
-            assertEquals(expected, awaitItem())
-            cancelAndIgnoreRemainingEvents()
+                val expected = CitiesEffect.ShowSnackBar(LocalizedMessage.CityNotFound)
+                assertEquals(expected, awaitItem())
+                cancelAndIgnoreRemainingEvents()
+            }
         }
-    }
 }
