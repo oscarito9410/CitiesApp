@@ -242,22 +242,23 @@ Each pull request triggers a full validation process including:
 
 ## 4. Tooling Summary
 
-| Tool | Purpose |
-| --- | --- |
-| Compose Multiplatform | Shared UI on Android/iOS |
-| Room + FTS4 | Offline search and prefix filtering |
+| Tool                                                                               | Purpose                                                                                  |
+|------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| Compose Multiplatform                                                              | Shared UI on Android/iOS                                                                 |
+| Room + FTS4                                                                        | Offline search and prefix filtering                                                      |
 | [Paging 3 (multiplatform-paging)](https://github.com/cashapp/multiplatform-paging) | Efficient pagination using AndroidX Paging 3 on Android and custom implementation on iOS |
-| Ktor | Networking |
-| Koin | Dependency injection |
-| [Mockkery](https://github.com/lupuuss/Mokkery) | Unit tests in commonTest (KMM-friendly mocking library for test doubles) |
-| [Mockk](https://mockk.io) | Unit tests in androidTests (mocking library for test doubles) |
-| Robolectric | Compose UI tests on JVM |
-| Detekt | Static analysis |
-| Kover | Code coverage tracking |
-| SonarQube | Code quality reporting |
-| GitHub Actions | CI/CD pipeline |
-| Fastlane | Android deployment |
-| Firebase | Performance & analytics tracking |
+| Ktor                                                                               | Networking                                                                               |
+| Koin                                                                               | Dependency injection                                                                     |
+| [Mockkery](https://github.com/lupuuss/Mokkery)                                     | Unit tests in commonTest (KMM-friendly mocking library for test doubles)                 |
+| [Mockk](https://mockk.io)                                                          | Unit tests in androidTests (mocking library for test doubles)                            |
+| [Kermit](https://kermit.touchlab.co)                                               | Log lib for KMM compatible with Android and IOS                                          |
+| Robolectric                                                                        | Compose UI tests on JVM                                                                  |
+| Detekt                                                                             | Static analysis                                                                          |
+| [Kover](https://github.com/Kotlin/kotlinx-kover)                                   | Code coverage tracking                                                                   |
+| SonarQube                                                                          | Code quality reporting                                                                   |
+| GitHub Actions                                                                     | CI/CD pipeline                                                                           |
+| Fastlane                                                                           | Android deployment                                                                       |
+| Firebase                                                                           | Performance & analytics tracking                                                         |
 
 
 
@@ -265,7 +266,7 @@ Each pull request triggers a full validation process including:
 
 ### 5.1 Requirements
 
-- ✅ [Android Studio Hedgehog or newer](https://developer.android.com/studio)
+- ✅ [Android Studio Narwhal or newer](https://developer.android.com/studio)
 - ✅ Kotlin Multiplatform Plugin
 - ✅ JDK 17
 - ✅ macOS with Xcode 14+ for iOS builds (if targeting iOS)
