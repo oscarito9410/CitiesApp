@@ -286,8 +286,7 @@ Each pull request triggers a full validation process including:
 ### 5.3 Launch Android App (Debug)
 
 ```bash
-./gradlew :app-android:installDebug
-adb shell am start -n com.oscarp.citiesapp/.MainActivity
+./gradlew :composeApp:installDebug
 ```
 
 ---
