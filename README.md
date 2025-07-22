@@ -249,7 +249,8 @@ Each pull request triggers a full validation process including:
 | [Paging 3 (multiplatform-paging)](https://github.com/cashapp/multiplatform-paging) | Efficient pagination using AndroidX Paging 3 on Android and custom implementation on iOS |
 | Ktor | Networking |
 | Koin | Dependency injection |
-| [Mockkery](https://github.com/copper-leaf/mockkery) | Unit tests in commonTest (KMM-friendly mocking library) |
+| [Mockkery](https://github.com/lupuuss/Mokkery) | Unit tests in commonTest (KMM-friendly mocking library for test doubles) |
+| [Mockk](https://mockk.io) | Unit tests in androidTests (mocking library for test doubles) |
 | Robolectric | Compose UI tests on JVM |
 | Detekt | Static analysis |
 | Kover | Code coverage tracking |
