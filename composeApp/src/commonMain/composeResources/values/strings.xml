@@ -20,7 +20,7 @@
     <string name="title_search_cities">Buscar ciudades</string>
     <string name="search_icon_content_description">Buscar</string>
     <string name="placeholder_search">Escribe el nombre de la ciudad…</string>
-    <string name="show_only_favorites">Mostrar solo favoritos</string>
+    <string name="label_show_only_favorites">Mostrar solo favoritos</string>
     <string name="action_clear_search">Limpiar búsqueda</string>
 
     <string name="favorite_status_updated">Favorito actualizado!</string>

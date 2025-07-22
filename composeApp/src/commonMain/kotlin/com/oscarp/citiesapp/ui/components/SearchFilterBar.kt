@@ -24,9 +24,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import citiesapp.composeapp.generated.resources.Res
 import citiesapp.composeapp.generated.resources.action_clear_search
+import citiesapp.composeapp.generated.resources.label_show_only_favorites
 import citiesapp.composeapp.generated.resources.placeholder_search
 import citiesapp.composeapp.generated.resources.search_icon_content_description
-import citiesapp.composeapp.generated.resources.show_only_favorites
 import citiesapp.composeapp.generated.resources.title_search_cities
 import com.oscarp.citiesapp.ui.theme.Dimens
 import org.jetbrains.compose.resources.stringResource
@@ -85,7 +85,7 @@ fun SearchFilterBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(Res.string.show_only_favorites),
+                text = stringResource(Res.string.label_show_only_favorites),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.testTag(SearchFavoritesLabelTag)
             )

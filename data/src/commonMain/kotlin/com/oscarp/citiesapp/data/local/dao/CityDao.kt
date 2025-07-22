@@ -40,7 +40,7 @@ interface CityDao {
 
     @Query(
         """
-    SELECT c.*
+    SELECT DISTINCT c.*
     FROM cities AS c
     JOIN cities_fts AS fts ON c.id = fts.rowid
     WHERE (:onlyFavorites = 0 OR c.isFavorite = 1)
@@ -48,7 +48,7 @@ interface CityDao {
       AND (c.name LIKE :query || '%' COLLATE NOCASE OR c.country LIKE :query || '%' COLLATE NOCASE)
     ORDER BY c.name
     LIMIT :loadSize OFFSET :offset
-"""
+    """
     )
     suspend fun getPaginatedCitiesWithSearch(
         query: String,
