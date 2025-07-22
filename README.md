@@ -240,14 +240,16 @@ Each pull request triggers a full validation process including:
 
 ## 4. Tooling Summary
 
+## 4. Tooling Summary
+
 | Tool | Purpose |
 | --- | --- |
 | Compose Multiplatform | Shared UI on Android/iOS |
 | Room + FTS4 | Offline search and prefix filtering |
-| Paging 3 | Efficient pagination of city results |
+| [Paging 3 (multiplatform-paging)](https://github.com/cashapp/multiplatform-paging) | Efficient pagination using AndroidX Paging 3 on Android and custom implementation on iOS |
 | Ktor | Networking |
 | Koin | Dependency injection |
-| Mockkery | Unit tests in commonTest |
+| [Mockkery](https://github.com/copper-leaf/mockkery) | Unit tests in commonTest (KMM-friendly mocking library) |
 | Robolectric | Compose UI tests on JVM |
 | Detekt | Static analysis |
 | Kover | Code coverage tracking |
@@ -255,6 +257,7 @@ Each pull request triggers a full validation process including:
 | GitHub Actions | CI/CD pipeline |
 | Fastlane | Android deployment |
 | Firebase | Performance & analytics tracking |
+
 
 
 ## 5. Running the Project
