@@ -77,11 +77,11 @@ class CitiesViewModel(
         isSinglePane: Boolean
     ) {
         if (isSinglePane) {
-            _state.update { it.copy(selectedCity = city) }
-        } else {
             viewModelScope.launch {
                 _uiEffect.emit(CitiesEffect.NavigateToCityDetails(city))
             }
+        } else {
+            _state.update { it.copy(selectedCity = city) }
         }
     }
 

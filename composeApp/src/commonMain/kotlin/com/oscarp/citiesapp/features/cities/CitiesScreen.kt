@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
@@ -354,7 +355,11 @@ fun EmptyListState(
     ) {
         Text(
             text = text,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleMedium
+                .copy(
+                    fontWeight = FontWeight.Thin
+                )
         )
     }
 }
