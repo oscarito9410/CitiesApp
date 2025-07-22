@@ -18,7 +18,6 @@ kotlin {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
-
     }
     iosX64()
     iosArm64()
@@ -48,6 +47,7 @@ kotlin {
                 implementation(libs.turbine)
                 implementation(libs.coroutines.test)
                 implementation(libs.mockk)
+                implementation(libs.androidx.paging.testing)
             }
         }
 

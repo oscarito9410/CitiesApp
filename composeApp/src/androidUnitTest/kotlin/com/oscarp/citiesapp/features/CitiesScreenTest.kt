@@ -18,6 +18,7 @@ import app.cash.paging.LoadStateLoading
 import app.cash.paging.LoadStateNotLoading
 import app.cash.paging.PagingData
 import com.oscarp.citiesapp.domain.models.City
+import com.oscarp.citiesapp.features.cities.AppendLoadingIndicatorTag
 import com.oscarp.citiesapp.features.cities.CitiesEffect
 import com.oscarp.citiesapp.features.cities.CitiesIntent
 import com.oscarp.citiesapp.features.cities.CitiesScreen
@@ -170,7 +171,7 @@ class CitiesScreenTest(
     }
 
     @Test
-    fun ui_effect_refresh_page_correctly() = runComposeUiTest {
+    fun ui_effect_refresh_page_works_correctly() = runComposeUiTest {
         fixtureViewModel()
 
         testScope.runTest {
@@ -188,6 +189,34 @@ class CitiesScreenTest(
 
         (viewModel.uiEffect as StateFlow<CitiesEffect>).value.apply {
             assertIs<CitiesEffect.RefreshCitiesPagination>(this)
+        }
+    }
+
+    @Test
+    fun ui_effect_navigate_cities_detail_works_correctly() = runComposeUiTest {
+        fixtureViewModel()
+
+        testScope.runTest {
+            pagingFlow.emit(
+                PagingData.from(
+                    listOf(
+                        fakeCity
+                    )
+                )
+            )
+            uiEffectFlow.emit(CitiesEffect.NavigateToCityDetails(fakeCity))
+        }
+
+        setContent {
+            AppTheme {
+                CitiesScreen(viewModel = viewModel, onCityDetailNavigation = {})
+            }
+        }
+
+        waitForIdle()
+
+        (viewModel.uiEffect as StateFlow<CitiesEffect>).value.apply {
+            assertIs<CitiesEffect.NavigateToCityDetails>(this)
         }
     }
 
@@ -295,15 +324,21 @@ class CitiesScreenTest(
                     listOf(fakeCity),
                     sourceLoadStates = app.cash.paging.LoadStates(
                         refresh = LoadStateNotLoading(endOfPaginationReached = true),
-                        prepend = LoadStateNotLoading(
-                            endOfPaginationReached = true
-                        ),
+                        prepend = LoadStateNotLoading(endOfPaginationReached = true),
                         append = LoadStateLoading,
                     )
                 )
             )
 
             stateFlow.emit(CitiesViewState(isLoading = true))
+
+            setContent {
+                AppTheme {
+                    CitiesScreen(viewModel = viewModel)
+                }
+            }
+
+            onNodeWithTag(AppendLoadingIndicatorTag).assertIsDisplayed()
         }
     }
 
