@@ -32,7 +32,7 @@ We use **Clean Architecture + MVI** on top of **Kotlin Multiplatform**. The e
 
 - `:domain` – Use cases, interfaces, models (`commonMain`)
 - `:data` – DB, API, and repositories (`commonMain`, `androidMain`, `iosMain`)
-- `:composeApp` – Shared UI in Compose + MVI ViewModels
+- `:composeApp` – Shared UI in Compose + MVI ViewModels used as Presentation Layer
 - `:app-android` – Android host with DI setup and theming
 - `:app-ios` – iOS host integrating Compose UI and MapKit
 
@@ -363,8 +363,16 @@ composeApp/build/reports/kover/report.xml
 ### 5.9 Full Quality Check (CI Reproduction)
 
 ```bash
-./gradlew allTests koverXmlReport detektAll
+./gradlew allTests koverXmlReport detekt
 ```
 
-> Reproduces what GitHub Actions validates in Pull Requests (tests, coverage, static analysis).
+This command reproduces the **entire validation pipeline** triggered in GitHub Actions for every pull request, validating high standards for quality and correctness.
+
+It includes:
+
+- ✅ All **unit tests**, **integration tests**, and **UI tests** (as detailed in section 5.5)
+- ✅ Platform-specific validation for Android and iOS modules
+- ✅ **Static analysis** via Detekt
+- ✅ **Code coverage** report generation with Kover
+
 
