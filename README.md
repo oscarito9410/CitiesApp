@@ -376,3 +376,12 @@ It includes:
 - ✅ **Code coverage** report generation with Kover
 
 
+## 6. App ShowCase
+
+https://github.com/user-attachments/assets/9eb5fa70-dd27-47b7-b96b-7725cc0f7ec8
+
+
+
+
+
+
