@@ -363,7 +363,7 @@ composeApp/build/reports/kover/report.xml
 ### 5.9 Full Quality Check (CI Reproduction)
 
 ```bash
-./gradlew allTests koverXmlReport detektAll
+./gradlew allTests koverXmlReport detekt
 ```
 
 > Reproduces what GitHub Actions validates in Pull Requests (tests, coverage, static analysis).
