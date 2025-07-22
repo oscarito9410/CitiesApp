@@ -366,5 +366,13 @@ composeApp/build/reports/kover/report.xml
 ./gradlew allTests koverXmlReport detekt
 ```
 
-> Reproduces what GitHub Actions validates in Pull Requests (tests, coverage, static analysis).
+This command reproduces the **entire validation pipeline** triggered in GitHub Actions for every pull request, validating high standards for quality and correctness.
+
+It includes:
+
+- ✅ All **unit tests**, **integration tests**, and **UI tests** (as detailed in section 5.5)
+- ✅ Platform-specific validation for Android and iOS modules
+- ✅ **Static analysis** via Detekt
+- ✅ **Code coverage** report generation with Kover
+
 
