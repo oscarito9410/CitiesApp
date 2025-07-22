@@ -1,6 +1,7 @@
 # CitiesApp 🌍
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-light.svg)](https://sonarcloud.io/summary/new_code?id=oscarito9410_citiesapp)
+
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=oscarito9410_citiesapp&metric=coverage)](https://sonarcloud.io/summary/new_code?id=oscarito9410_citiesapp)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=oscarito9410_citiesapp&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=oscarito9410_citiesapp)
 
@@ -253,3 +254,113 @@ Each pull request triggers a full validation process including:
 | GitHub Actions | CI/CD pipeline |
 | Fastlane | Android deployment |
 | Firebase | Performance & analytics tracking |
+
+
+## 5. Running the Project
+
+### 5.1 Requirements
+
+- ✅ [Android Studio Hedgehog or newer](https://developer.android.com/studio)
+- ✅ Kotlin Multiplatform Plugin
+- ✅ JDK 17
+- ✅ macOS with Xcode 14+ for iOS builds (if targeting iOS)
+- ✅ CocoaPods installed (`brew install cocoapods`)
+
+---
+
+### 5.2 Build Compose Multiplatform UI
+
+```bash
+./gradlew :composeApp:build
+```
+
+> Builds the shared Compose UI codebase for Android and iOS. This command does **not** build the Android host or iOS host app.
+
+---
+
+### 5.3 Launch Android App (Debug)
+
+```bash
+./gradlew :app-android:installDebug
+adb shell am start -n com.oscarp.citiesapp/.MainActivity
+```
+
+---
+
+### 5.4 Launch iOS App (Preview Only)
+
+To preview Compose UI on iOS, run the following:
+
+```bash
+open iosApp/iosApp.xcworkspace
+```
+
+- Run the app using Xcode’s simulator.
+- Compose UI is rendered inside a `UIViewController`.
+- Map view is bridged via:
+
+```kotlin
+UIKitView(factory = { MKMapView() })
+```
+
+---
+
+### 5.5 Run Unit Tests (Includes Compose UI Tests via Robolectric)
+
+```bash
+./gradlew composeApp:testDebugUnitTest data:allTests domain:allTests --parallel --continue
+```
+
+- Runs:
+  - `commonTest` with **Mockkery**
+  - `data` and `domain` unit tests
+  - **Compose UI tests** using **Robolectric**
+- Includes **isolated UI component tests** and **instrumented feature-level tests** for full flows like *sync* and *city search* across multiple screen densities and configurations.
+
+---
+
+### 5.6 Run Only Compose UI Tests (Optional)
+
+```bash
+./gradlew composeApp:testDebugUnitTest
+```
+
+> Used for local debugging. Already included in `5.5`.
+
+---
+
+### 5.7 Generate Code Coverage Report (Kover)
+
+```bash
+./gradlew koverXmlReport
+```
+
+- Report is output to:
+
+```
+composeApp/build/reports/kover/report.xml
+```
+
+> This is consumed by **SonarCloud** for quality gates and PR feedback.
+
+---
+
+### 5.8 Static Analysis (Detekt)
+
+```bash
+./gradlew detektAll
+```
+
+- Uses config from: `config/detekt/detekt.yml`
+- Custom rules and formatting policies applied
+
+---
+
+### 5.9 Full Quality Check (CI Reproduction)
+
+```bash
+./gradlew allTests koverXmlReport detektAll
+```
+
+> Reproduces what GitHub Actions validates in Pull Requests (tests, coverage, static analysis).
+
