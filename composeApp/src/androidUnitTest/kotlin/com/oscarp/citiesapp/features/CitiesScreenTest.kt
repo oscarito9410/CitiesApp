@@ -9,9 +9,11 @@ import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.runComposeUiTest
 import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
@@ -25,6 +27,8 @@ import com.oscarp.citiesapp.features.cities.CitiesScreen
 import com.oscarp.citiesapp.features.cities.CitiesViewModel
 import com.oscarp.citiesapp.features.cities.CitiesViewState
 import com.oscarp.citiesapp.features.cities.CityMapDetailTag
+import com.oscarp.citiesapp.features.cities.EmptyCitiesListTag
+import com.oscarp.citiesapp.features.cities.EmptyCitySelectedTag
 import com.oscarp.citiesapp.features.cities.RefreshLoadingIndicatorTag
 import com.oscarp.citiesapp.features.cities.SingleColumnCitiesListTag
 import com.oscarp.citiesapp.testutil.DeviceQualifiers
@@ -32,6 +36,7 @@ import com.oscarp.citiesapp.testutil.RobolectricComposeTest
 import com.oscarp.citiesapp.ui.components.CityItemTag
 import com.oscarp.citiesapp.ui.components.FavoriteButtonTag
 import com.oscarp.citiesapp.ui.components.SearchFavoritesSwitchTag
+import com.oscarp.citiesapp.ui.components.SearchTextFieldTag
 import com.oscarp.citiesapp.ui.resourcemanager.LocalizedMessage
 import com.oscarp.citiesapp.ui.theme.AppTheme
 import io.mockk.Runs
@@ -101,7 +106,7 @@ class CitiesScreenTest(
     }
 
     @Test
-    fun cities_screen_displays_search_filter_bar_and_city_item() =
+    fun cities_screen_displays_search_filter_and_enter_texts() =
         runComposeUiTest(effectContext = testDispatcher) {
             testScope.runTest {
                 pagingFlow.emit(PagingData.from(listOf(fakeCity)))
@@ -115,6 +120,7 @@ class CitiesScreenTest(
 
             onNodeWithTag("${CityItemTag}_1").assertIsDisplayed()
             onNodeWithTag(FavoriteButtonTag).assertIsDisplayed()
+            onNodeWithTag(SearchTextFieldTag).performTextInput("Puebla")
 
             // when phone is portrait then map is not displayed
             if (qualifiers == DeviceQualifiers.PhonePortrait) {
@@ -167,7 +173,7 @@ class CitiesScreenTest(
 
         waitForIdle()
 
-        onNodeWithText("No Items").assertIsDisplayed()
+        onNodeWithTag(EmptyCitiesListTag).assertIsDisplayed()
     }
 
     @Test
@@ -281,10 +287,71 @@ class CitiesScreenTest(
 
             onNodeWithTag("${CityItemTag}_1").assertIsDisplayed()
             onNodeWithTag(FavoriteButtonTag).assertIsDisplayed()
+                .performClick()
             // assert the map is shown in tablet mode
             onNodeWithText(
-                "Map render in test",
+                MAP_RENDER_TEXT_ASSERT,
             ).assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun cities_screen_displays_search_filter_bar_and_empty_state_when_tablet() {
+        if (qualifiers == DeviceQualifiers.PhonePortrait) {
+            Log.d("CitiesScreenTest", "Skipping tablet test on phone portrait")
+            return
+        }
+
+        runComposeUiTest(effectContext = testDispatcher) {
+            testScope.runTest {
+                pagingFlow.emit(PagingData.from(listOf(fakeCity)))
+                stateFlow.emit(
+                    CitiesViewState(
+                        selectedCity = null,
+                        isLoading = false
+                    )
+                )
+            }
+
+            setContent {
+                AppTheme {
+                    CitiesScreen(viewModel = viewModel)
+                }
+            }
+
+            onNodeWithTag("${CityItemTag}_1").assertIsDisplayed()
+            onNodeWithTag(FavoriteButtonTag).assertIsDisplayed()
+                .performClick()
+            onNodeWithText(
+                MAP_RENDER_TEXT_ASSERT,
+            ).assertIsNotDisplayed()
+            onNodeWithTag(EmptyCitySelectedTag)
+        }
+    }
+
+    @Test
+    fun cities_screen_displays_search_filter_bar_and_taps_city() {
+        runComposeUiTest(effectContext = testDispatcher) {
+            testScope.runTest {
+                pagingFlow.emit(PagingData.from(listOf(fakeCity)))
+                stateFlow.emit(
+                    CitiesViewState(
+                        selectedCity = fakeCity,
+                        isLoading = false
+                    )
+                )
+            }
+
+            setContent {
+                AppTheme {
+                    CitiesScreen(viewModel = viewModel)
+                }
+            }
+
+            onNodeWithTag("${CityItemTag}_1").assertIsDisplayed()
+                .performClick()
+            onNodeWithTag(FavoriteButtonTag).assertIsDisplayed()
+                .performClick()
         }
     }
 
@@ -353,7 +420,7 @@ class CitiesScreenTest(
                         prepend = LoadStateNotLoading(
                             endOfPaginationReached = true
                         ),
-                        append = LoadStateError(Exception("IO error"))
+                        append = LoadStateError(Exception(GENERIC_ERROR_VALIDATION))
                     )
                 )
             )
@@ -367,7 +434,7 @@ class CitiesScreenTest(
             }
         }
 
-        onNodeWithText("IO error").assertIsDisplayed()
+        onNodeWithText(GENERIC_ERROR_VALIDATION).assertIsDisplayed()
     }
 
     @Test
@@ -377,7 +444,7 @@ class CitiesScreenTest(
                 PagingData.from(
                     listOf(fakeCity),
                     sourceLoadStates = app.cash.paging.LoadStates(
-                        refresh = LoadStateError(Exception("IO error")),
+                        refresh = LoadStateError(Exception(GENERIC_ERROR_VALIDATION)),
                         prepend = LoadStateNotLoading(
                             endOfPaginationReached = true
                         ),
@@ -397,7 +464,7 @@ class CitiesScreenTest(
             }
         }
 
-        onNodeWithText("IO error").assertIsDisplayed()
+        onNodeWithText(GENERIC_ERROR_VALIDATION).assertIsDisplayed()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -410,6 +477,9 @@ class CitiesScreenTest(
     }
 
     companion object {
+        private const val GENERIC_ERROR_VALIDATION = "Generic error"
+        private const val MAP_RENDER_TEXT_ASSERT = "Map render in test"
+
         @JvmStatic
         @ParameterizedRobolectricTestRunner.Parameters(name = "Qualifier={0}")
         fun data() = listOf(
