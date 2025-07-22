@@ -32,7 +32,7 @@ We use **Clean Architecture + MVI** on top of **Kotlin Multiplatform**. The e
 
 - `:domain` – Use cases, interfaces, models (`commonMain`)
 - `:data` – DB, API, and repositories (`commonMain`, `androidMain`, `iosMain`)
-- `:composeApp` – Shared UI in Compose + MVI ViewModels
+- `:composeApp` – Shared UI in Compose + MVI ViewModels used as Presentation Layer
 - `:app-android` – Android host with DI setup and theming
 - `:app-ios` – iOS host integrating Compose UI and MapKit
 
