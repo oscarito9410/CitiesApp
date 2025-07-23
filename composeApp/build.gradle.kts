@@ -72,7 +72,7 @@ kotlin {
 
             implementation(libs.paging.common)
             implementation(libs.paging.compose.common)
-            
+
             implementation(project(":data"))
             implementation(project(":domain"))
 
@@ -102,18 +102,19 @@ android {
     namespace = "com.oscarp.citiesapp"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
+
     defaultConfig {
-        val props = Properties().apply {
-            load(File(rootDir, "local.properties").inputStream())
-        }
-        val apiKey = props.getProperty("MAPS_API_KEY") ?: "NOT_KEY_FOUND"
+        val mapsApiKey: String = System.getenv("MAPS_API_KEY")
+            ?: File(rootDir, "local.properties").takeIf { it.exists() }?.let {
+                Properties().apply { load(it.inputStream()) }.getProperty("MAPS_API_KEY")
+            } ?: "NOT_KEY_FOUND"
         applicationId = "com.oscarp.citiesapp"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 1
         versionName = "1.0"
-        resValue("string", "google_maps_api_key", apiKey)
+        resValue("string", "google_maps_api_key", mapsApiKey)
     }
     packaging {
         resources {
