@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -25,6 +26,7 @@ kotlin {
             androidTestImplementation(libs.androidx.compose.ui.test.junit4)
             debugImplementation(libs.androidx.compose.ui.test.manifest)
         }
+
     }
 
     listOf(
@@ -94,17 +96,24 @@ kotlin {
     }
 }
 
+
+
 android {
     namespace = "com.oscarp.citiesapp"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
+        val props = Properties().apply {
+            load(File(rootDir, "local.properties").inputStream())
+        }
+        val apiKey = props.getProperty("MAPS_API_KEY") ?: "NOT_KEY_FOUND"
         applicationId = "com.oscarp.citiesapp"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 1
         versionName = "1.0"
+        resValue("string", "google_maps_api_key", apiKey)
     }
     packaging {
         resources {
