@@ -84,7 +84,7 @@ class CitiesViewModelTest {
     }
 
     @Test
-    fun `processIntent OnCitySelected sets city in state when single pane`() = runTest(dispatcher) {
+    fun `processIntent OnCitySelected sets city in state`() = runTest(dispatcher) {
         // initial state
         assertNull(viewModel.state.value.selectedCity)
 
@@ -92,7 +92,6 @@ class CitiesViewModelTest {
         viewModel.processIntent(
             CitiesIntent.OnCitySelected(
                 fakeCity,
-                isSinglePane = true
             )
         )
 
@@ -101,29 +100,6 @@ class CitiesViewModelTest {
             fakeCity,
             viewModel.state.value.selectedCity
         )
-    }
-
-    @Test
-    fun `processIntent OnCitySelected sets city in state when two pane`() = runTest(dispatcher) {
-        // initial state
-        assertNull(viewModel.state.value.selectedCity)
-
-        // when & then
-        viewModel.uiEffect.test {
-            viewModel.processIntent(
-                CitiesIntent.OnCitySelected(
-                    fakeCity,
-                    isSinglePane = false
-                )
-            )
-            advanceUntilIdle()
-            val effect = awaitItem()
-            assertIs<CitiesEffect.NavigateToCityDetails>(
-                effect,
-                "the effect should be NavigateToCityDetails"
-            )
-            cancelAndIgnoreRemainingEvents()
-        }
     }
 
     @Test

@@ -42,7 +42,6 @@ import com.oscarp.citiesapp.ui.utils.DeviceLayoutMode
 import com.oscarp.citiesapp.ui.utils.MultiWindowSizeLayout
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 
 const val RefreshLoadingIndicatorTag = "RefreshLoadingIndicator"
 const val AppendLoadingIndicatorTag = "AppendLoadingIndicator"
@@ -54,42 +53,50 @@ const val EmptyCitySelectedTag = "EmptyCitySelected"
 
 @Composable
 fun CitiesScreen(
-    viewModel: CitiesViewModel = koinInject(),
+    viewModel: CitiesViewModel,
+    coordinator: CitiesCoordinator,
     hostState: SnackbarHostState? = null,
-    onCityDetailNavigation: (City) -> Unit = {},
 ) {
     val state by viewModel.state.collectAsState()
     val cities = viewModel.paginatedCities.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
+        coordinator.onCitiesScreenEntered()
         observeUiEffects(
             viewModel,
             cities,
             hostState,
-            onCityDetailNavigation
         )
     }
 
-    val onSearchQueryChanged: (String) -> Unit = {
-        viewModel.processIntent(CitiesIntent.OnSearchQueryChanged(it))
+    LaunchedEffect(
+        cities.loadState.refresh,
+        cities.loadState.append,
+        cities.itemCount,
+        state.searchQuery
+    ) {
+        observeListStateChanges(
+            cities,
+            coordinator,
+            state
+        )
+    }
+
+    val onSearchQueryChanged: (String) -> Unit = { query ->
+        coordinator.onSearchQueryChanged(query)
     }
     val onShowFavoritesFilter: () -> Unit = {
-        viewModel.processIntent(CitiesIntent.OnShowFavoritesFilter)
+        coordinator.onShowFavoritesFilterToggled(newState = !state.showOnlyFavorites)
     }
     val onToggleFavorite: (City) -> Unit = {
-        viewModel.processIntent(CitiesIntent.OnFavoriteToggled(it))
+        coordinator.onFavoriteToggled(it)
     }
 
     MultiWindowSizeLayout { layoutMode ->
         val isSinglePane = layoutMode == DeviceLayoutMode.SINGLE_PANE
         val onCitySelected: (City) -> Unit =
             {
-                viewModel.processIntent(
-                    CitiesIntent.OnCitySelected(
-                        it,
-                        isSinglePane
-                    )
-                )
+                coordinator.onCitySelected(it, isSinglePane)
             }
 
         if (isSinglePane) {
@@ -122,7 +129,6 @@ private suspend fun observeUiEffects(
     viewModel: CitiesViewModel,
     cities: LazyPagingItems<City>,
     hostState: SnackbarHostState?,
-    onCityDetailNavigation: (City) -> Unit
 ) {
     viewModel.uiEffect.collect { effect ->
         when (effect) {
@@ -136,11 +142,27 @@ private suspend fun observeUiEffects(
                 cities.refresh()
             }
 
-            is CitiesEffect.NavigateToCityDetails -> {
-                onCityDetailNavigation(effect.city)
-            }
-
             else -> Unit
+        }
+    }
+}
+
+private fun observeListStateChanges(
+    cities: LazyPagingItems<City>,
+    coordinator: CitiesCoordinator,
+    state: CitiesViewState
+) {
+    with(cities.loadState) {
+        val isEmptyState = cities.itemCount == 0 &&
+            refresh is LoadStateNotLoading && append is LoadStateNotLoading
+
+        if (refresh is LoadStateError) {
+            val errorMessage = (refresh as LoadStateError).error.message.orEmpty()
+            coordinator.onInitialCitiesLoadError(errorMessage)
+        } else if (isEmptyState) {
+            coordinator.onCitiesListDisplayedEmpty(
+                searchQuery = state.searchQuery
+            )
         }
     }
 }

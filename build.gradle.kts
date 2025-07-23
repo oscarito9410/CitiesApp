@@ -83,7 +83,8 @@ sonar {
                 "**/iosMain/**/MainViewController.kt",
                 "**/iosMain/**/SharedViewModel.ios.kt",
                 "**/*Preview.kt",
-                "**/*.preview.kt"
+                "**/*.preview.kt",
+                "**/*AppNavigation.kt"
             ).joinToString(",")
         )
     }

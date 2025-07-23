@@ -33,4 +33,32 @@ class CityMappersTest {
 
         assertEquals(expected, result)
     }
+
+    @Test
+    fun `toCity correctly maps CityMapDetail to City`() {
+        // given
+        val detail = CityMapDetail(
+            id = 456,
+            name = "CDMX",
+            countryCode = "MX",
+            latitude = 19.4,
+            longitude = -99.1,
+            isFavorite = false
+        )
+
+        // when
+        val result = detail.toCity()
+
+        // then
+        val expected = City(
+            id = 456,
+            name = "CDMX",
+            country = "MX",
+            latitude = 19.4,
+            longitude = -99.1,
+            isFavorite = false
+        )
+
+        assertEquals(expected, result)
+    }
 }

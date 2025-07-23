@@ -11,3 +11,12 @@ fun City.toCityMapDetail(): CityMapDetail = CityMapDetail(
     longitude = longitude,
     isFavorite = isFavorite
 )
+
+fun CityMapDetail.toCity(): City = City(
+    id = id,
+    name = name,
+    country = countryCode,
+    latitude = latitude,
+    longitude = longitude,
+    isFavorite = isFavorite
+)
