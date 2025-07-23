@@ -1,5 +1,4 @@
 
-https://github.com/user-attachments/assets/32bb087b-43bc-46a3-a63d-c1081f2b08ea
 # CitiesApp 🌍
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-light.svg)](https://sonarcloud.io/summary/new_code?id=oscarito9410_citiesapp)
