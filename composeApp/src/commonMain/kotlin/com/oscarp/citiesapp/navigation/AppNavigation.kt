@@ -53,7 +53,6 @@ fun AppNavigation(
         composable<SyncCitiesDestination> {
             val viewModel: SyncCitiesViewModel = koinInject()
             val coordinator = rememberSyncCitiesCoordinator(navController)
-
             SyncScreen(
                 viewModel = viewModel,
                 coordinator = coordinator
@@ -73,7 +72,6 @@ fun AppNavigation(
         composable<CityMapDetail> { backStackEntry ->
             val cityMapDetail = backStackEntry.toRoute<CityMapDetail>()
             val coordinator = rememberMapDetailCoordinator(navController)
-
             MapDetailScreen(
                 cityMapDetail = cityMapDetail,
                 coordinator = coordinator
