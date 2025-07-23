@@ -14,7 +14,10 @@ import androidx.navigation.toRoute
 import com.oscarp.citiesapp.features.cities.CitiesCoordinator
 import com.oscarp.citiesapp.features.cities.CitiesScreen
 import com.oscarp.citiesapp.features.cities.CitiesViewModel
+import com.oscarp.citiesapp.features.mapdetail.MapDetailCoordinator
 import com.oscarp.citiesapp.features.mapdetail.MapDetailScreen
+import com.oscarp.citiesapp.features.synccities.SyncCitiesCoordinator
+import com.oscarp.citiesapp.features.synccities.SyncCitiesViewModel
 import com.oscarp.citiesapp.features.synccities.SyncScreen
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
@@ -48,7 +51,13 @@ fun AppNavigation(
         modifier = Modifier.padding(contentPadding)
     ) {
         composable<SyncCitiesDestination> {
-            SyncScreen(navController)
+            val viewModel: SyncCitiesViewModel = koinInject()
+            val coordinator = rememberSyncCitiesCoordinator(navController)
+
+            SyncScreen(
+                viewModel = viewModel,
+                coordinator = coordinator
+            )
         }
 
         composable<CitiesDestination> {
@@ -63,9 +72,11 @@ fun AppNavigation(
 
         composable<CityMapDetail> { backStackEntry ->
             val cityMapDetail = backStackEntry.toRoute<CityMapDetail>()
+            val coordinator = rememberMapDetailCoordinator(navController)
+
             MapDetailScreen(
-                cityMapDetail,
-                onBack = { navController.popBackStack() },
+                cityMapDetail = cityMapDetail,
+                coordinator = coordinator
             )
         }
     }
@@ -81,4 +92,24 @@ fun rememberCitiesCoordinator(
     return remember(navController) {
         injectedCoordinator
     }
+}
+
+@Composable
+fun rememberSyncCitiesCoordinator(
+    navController: NavHostController
+): SyncCitiesCoordinator {
+    val injectedCoordinator = koinInject<SyncCitiesCoordinator>(parameters = {
+        parametersOf(navController)
+    })
+    return remember(navController) { injectedCoordinator }
+}
+
+@Composable
+fun rememberMapDetailCoordinator(
+    navController: NavHostController
+): MapDetailCoordinator {
+    val injectedCoordinator = koinInject<MapDetailCoordinator>(parameters = {
+        parametersOf(navController)
+    })
+    return remember(navController) { injectedCoordinator }
 }

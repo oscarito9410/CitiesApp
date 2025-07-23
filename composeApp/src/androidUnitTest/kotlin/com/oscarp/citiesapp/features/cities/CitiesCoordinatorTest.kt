@@ -32,7 +32,11 @@ class CitiesCoordinatorTest {
         navigator = mockk(relaxed = true)
         analytics = mockk(relaxed = true)
 
-        coordinator = CitiesCoordinator(viewModel, navigator, analytics)
+        coordinator = CitiesCoordinator(
+            viewModel = viewModel,
+            navigator = navigator,
+            analytics = analytics
+        )
     }
 
     @After
@@ -110,8 +114,8 @@ class CitiesCoordinatorTest {
     }
 
     @Test
-    fun `onCitiesScreenEntered - logs screen view`() {
-        coordinator.onCitiesScreenEntered()
+    fun `onCitiesScreenLoaded - logs screen view`() {
+        coordinator.onCitiesScreenLoaded()
 
         verify {
             analytics.logScreenView(

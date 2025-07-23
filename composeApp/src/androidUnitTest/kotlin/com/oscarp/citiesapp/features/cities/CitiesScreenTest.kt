@@ -299,8 +299,6 @@ class CitiesScreenTest(
         }
     }
 
-    // -------------------- Helpers ------------------------
-
     fun ComposeUiTest.citiesScreenRobot(): CitiesScreenRobot =
         CitiesScreenRobot(this, viewModel, coodinator, hostState)
 
