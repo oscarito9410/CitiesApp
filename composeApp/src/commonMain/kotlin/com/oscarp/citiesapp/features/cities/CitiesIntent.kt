@@ -7,7 +7,6 @@ sealed class CitiesIntent {
     data class OnFavoriteToggled(val city: City) : CitiesIntent()
     data class OnCitySelected(
         val city: City,
-        val isSinglePane: Boolean
     ) : CitiesIntent()
 
     object OnShowFavoritesFilter : CitiesIntent()

@@ -4,17 +4,21 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.oscarp.citiesapp.features.cities.CitiesCoordinator
 import com.oscarp.citiesapp.features.cities.CitiesScreen
+import com.oscarp.citiesapp.features.cities.CitiesViewModel
 import com.oscarp.citiesapp.features.mapdetail.MapDetailScreen
 import com.oscarp.citiesapp.features.synccities.SyncScreen
-import com.oscarp.citiesapp.mappers.toCityMapDetail
 import kotlinx.serialization.Serializable
+import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 @Serializable
 object CitiesDestination
@@ -48,9 +52,13 @@ fun AppNavigation(
         }
 
         composable<CitiesDestination> {
-            CitiesScreen(hostState = hostState) {
-                navController.navigate(it.toCityMapDetail())
-            }
+            val citiesViewModel: CitiesViewModel = koinInject()
+            val citiesCoordinator: CitiesCoordinator = rememberCitiesCoordinator(navController)
+            CitiesScreen(
+                viewModel = citiesViewModel,
+                coordinator = citiesCoordinator,
+                hostState = hostState
+            )
         }
 
         composable<CityMapDetail> { backStackEntry ->
@@ -60,5 +68,17 @@ fun AppNavigation(
                 onBack = { navController.popBackStack() },
             )
         }
+    }
+}
+
+@Composable
+fun rememberCitiesCoordinator(
+    navController: NavHostController
+): CitiesCoordinator {
+    val injectedCoordinator = koinInject<CitiesCoordinator>(parameters = {
+        parametersOf(navController)
+    })
+    return remember(navController) {
+        injectedCoordinator
     }
 }

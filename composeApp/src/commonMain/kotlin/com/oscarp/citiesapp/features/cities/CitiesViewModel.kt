@@ -63,24 +63,11 @@ class CitiesViewModel(
             }
 
             is CitiesIntent.OnCitySelected -> {
-                handleCitySelected(intent.city, intent.isSinglePane)
+                _state.update { it.copy(selectedCity = intent.city) }
             }
 
             CitiesIntent.OnShowFavoritesFilter -> {
                 _state.update { it.copy(showOnlyFavorites = !it.showOnlyFavorites) }
-            }
-        }
-    }
-
-    private fun handleCitySelected(
-        city: City,
-        isSinglePane: Boolean
-    ) {
-        if (isSinglePane) {
-            _state.update { it.copy(selectedCity = city) }
-        } else {
-            viewModelScope.launch {
-                _uiEffect.emit(CitiesEffect.NavigateToCityDetails(city))
             }
         }
     }
