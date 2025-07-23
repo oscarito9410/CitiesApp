@@ -20,8 +20,7 @@ private val fakeCity = City(
 fun PreviewMapDetailScreen() {
     AppTheme {
         MapDetailScreen(
-            cityMapDetail = fakeCity.toCityMapDetail(),
-            onBack = {}
+            cityMapDetail = fakeCity.toCityMapDetail()
         )
     }
 }

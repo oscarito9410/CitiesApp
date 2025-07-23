@@ -1,4 +1,3 @@
 <resources>
     <string name="app_name">CitiesApp</string>
-    <string name="google_maps_api_key">TODO_USE_REAL_API_KEY</string>
 </resources>

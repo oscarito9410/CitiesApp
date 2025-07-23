@@ -20,24 +20,18 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import citiesapp.composeapp.generated.resources.Res
 import citiesapp.composeapp.generated.resources.text_error_sync_cities
 import citiesapp.composeapp.generated.resources.text_sync_completed
 import citiesapp.composeapp.generated.resources.text_sync_getting_cities
 import citiesapp.composeapp.generated.resources.text_sync_retry
 import citiesapp.composeapp.generated.resources.text_sync_saving_cities
-import com.oscarp.citiesapp.navigation.CitiesDestination
-import com.oscarp.citiesapp.navigation.SyncCitiesDestination
 import com.oscarp.citiesapp.ui.components.AnimatedPercentText
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
-import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
-import kotlin.time.Duration.Companion.seconds
 
 const val TagLoading = "LoadingContent"
 const val TagRetryButton = "RetryButton"
@@ -46,41 +40,32 @@ const val TagCompleted = "CompletedContent"
 
 @Composable
 fun SyncScreen(
-    navController: NavController,
-    viewModel: SyncCitiesViewModel = koinInject()
+    viewModel: SyncCitiesViewModel,
+    coordinator: SyncCitiesCoordinator,
 ) {
     val viewState by viewModel.state.collectAsState()
 
+    LaunchedEffect(Unit) {
+        coordinator.onScreenLoaded()
+    }
+
     LaunchedEffect(viewState.isCompleted) {
         if (viewState.isCompleted) {
-            delay(1.seconds)
-            navController.navigate(CitiesDestination) {
-                popUpTo(SyncCitiesDestination) { inclusive = true }
-            }
+            coordinator.onSyncCompleted()
         }
     }
 
     SyncContent(
         state = viewState,
-        onLoad = {
-            viewModel.processIntent(SyncIntent.VerifyLoadSync)
-        },
-        onRetry = {
-            viewModel.processIntent(SyncIntent.StartSync)
-        }
+        onRetry = coordinator::onRetryClicked
     )
 }
 
 @Composable
 fun SyncContent(
     state: SyncViewState,
-    onLoad: () -> Unit,
     onRetry: () -> Unit
 ) {
-    LaunchedEffect(Unit) {
-        onLoad()
-    }
-
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

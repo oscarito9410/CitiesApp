@@ -274,6 +274,15 @@ Each pull request triggers a full validation process including:
 
 ---
 
+
+### 5.1.1 Configure API Keys (Local Only)
+
+To enable Google Maps rendering, you must define your Maps API Key in your `local.properties`:
+
+```properties
+MAPS_API_KEY=AIza...your_real_key_here
+```
+
 ### 5.2 Build Compose Multiplatform UI
 
 ```bash

@@ -11,7 +11,6 @@ fun PreviewSyncContent_Loading_Saving() {
             isLoading = true,
             percentSync = 65
         ),
-        onLoad = {},
         onRetry = {}
     )
 }
@@ -24,7 +23,6 @@ fun PreviewSyncContent_Error() {
             isNoInternet = false,
             isError = true
         ),
-        onLoad = {},
         onRetry = {}
     )
 }
@@ -36,7 +34,6 @@ fun PreviewSyncContent_Completed() {
         state = SyncViewState(
             isCompleted = true
         ),
-        onLoad = {},
         onRetry = {}
     )
 }

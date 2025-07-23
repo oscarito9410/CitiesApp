@@ -30,7 +30,6 @@ class SyncContentTest : RobolectricComposeTest() {
         setContent {
             SyncContent(
                 state = state,
-                onLoad = {},
                 onRetry = {}
             )
         }
@@ -52,7 +51,6 @@ class SyncContentTest : RobolectricComposeTest() {
         setContent {
             SyncContent(
                 state = state,
-                onLoad = {},
                 onRetry = {}
             )
         }
@@ -73,7 +71,6 @@ class SyncContentTest : RobolectricComposeTest() {
         setContent {
             SyncContent(
                 state = state,
-                onLoad = {},
                 onRetry = {}
             )
         }

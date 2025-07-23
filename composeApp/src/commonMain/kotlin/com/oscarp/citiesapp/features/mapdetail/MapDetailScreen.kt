@@ -10,9 +10,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.oscarp.citiesapp.navigation.CityMapDetail
 import com.oscarp.citiesapp.ui.components.CityMapDetail
+import org.koin.compose.koinInject
 
 const val BackContentDescription = "Back"
 
@@ -20,13 +22,17 @@ const val BackContentDescription = "Back"
 @Composable
 fun MapDetailScreen(
     cityMapDetail: CityMapDetail,
-    onBack: () -> Unit
+    coordinator: MapDetailCoordinator = koinInject(),
 ) {
+    LaunchedEffect(Unit) {
+        coordinator.onScreenLoaded()
+    }
+
     Column {
         TopAppBar(
             title = { Text(cityMapDetail.name) },
             navigationIcon = {
-                IconButton(onClick = onBack) {
+                IconButton(onClick = coordinator::onBackClicked) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = BackContentDescription

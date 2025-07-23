@@ -61,7 +61,7 @@ fun CitiesScreen(
     val cities = viewModel.paginatedCities.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
-        coordinator.onCitiesScreenEntered()
+        coordinator.onCitiesScreenLoaded()
         observeUiEffects(
             viewModel,
             cities,
