@@ -388,7 +388,16 @@ It includes:
 
 ## 6. App ShowCase
 
+### 6.1 Android
+
+https://github.com/user-attachments/assets/cd10cb78-f299-42c9-a877-20777dc8e4c2
+
+### 6.2 Ipad
+
 https://github.com/user-attachments/assets/9eb5fa70-dd27-47b7-b96b-7725cc0f7ec8
+
+
+
 
 
 
