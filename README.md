@@ -347,13 +347,24 @@ UIKitView(factory = { MKMapView() })
 ### 5.7 Generate Code Coverage Report (Kover)
 
 ```bash
-./gradlew koverXmlReport
+./gradlew koverHtmlReportCoverage
+```
+or 
+
+```bash
+./gradlew koverXmlReportCoverage
 ```
 
 - Report is output to:
 
 ```
-composeApp/build/reports/kover/report.xml
+composeApp/build/reports/kover/reportCoverage.xml
+```
+
+or for HTML
+
+```
+composeApp/build/reports/kover/htmlCoverage/index.html
 ```
 
 > This is consumed by **SonarCloud** for quality gates and PR feedback.
