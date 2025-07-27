@@ -99,7 +99,8 @@ class CitiesCoordinatorTest {
 
         verify {
             analytics.logEvent(
-                EVENT_SEARCH_QUERY_CHANGED, mapOf(
+                EVENT_SEARCH_QUERY_CHANGED,
+                mapOf(
                     "searchQuery" to query
                 )
             )
