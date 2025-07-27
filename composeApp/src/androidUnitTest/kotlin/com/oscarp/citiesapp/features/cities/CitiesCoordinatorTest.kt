@@ -2,6 +2,7 @@ package com.oscarp.citiesapp.features.cities
 
 import com.oscarp.citiesapp.analytics.AnalyticsService
 import com.oscarp.citiesapp.domain.models.City
+import com.oscarp.citiesapp.features.cities.CitiesCoordinator.Companion.EVENT_SEARCH_QUERY_CHANGED
 import com.oscarp.citiesapp.navigation.Navigator
 import io.mockk.clearAllMocks
 import io.mockk.mockk
@@ -87,7 +88,7 @@ class CitiesCoordinatorTest {
     }
 
     @Test
-    fun `onSearchQueryChanged - sends intent only`() {
+    fun `onSearchQueryChanged - sends event`() {
         val query = "Puebla"
 
         coordinator.onSearchQueryChanged(query)
@@ -96,7 +97,13 @@ class CitiesCoordinatorTest {
             viewModel.processIntent(CitiesIntent.OnSearchQueryChanged(query))
         }
 
-        verify(exactly = 0) { analytics.logEvent(any(), any()) }
+        verify {
+            analytics.logEvent(
+                EVENT_SEARCH_QUERY_CHANGED, mapOf(
+                    "searchQuery" to query
+                )
+            )
+        }
         verify(exactly = 0) { analytics.logScreenView(any(), any()) }
     }
 

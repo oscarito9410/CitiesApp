@@ -42,6 +42,10 @@ class CitiesCoordinator(
 
     fun onSearchQueryChanged(query: String) {
         viewModel.processIntent(CitiesIntent.OnSearchQueryChanged(query))
+        analytics.logEvent(
+            EVENT_SEARCH_QUERY_CHANGED,
+            mapOf("searchQuery" to query)
+        )
     }
 
     fun onShowFavoritesFilterToggled(newState: Boolean) {
@@ -74,5 +78,6 @@ class CitiesCoordinator(
         const val EVENT_SHOW_FAVORITES_FILTER_TOGGLED = "ShowFavoritesFilterToggled"
         const val EVENT_INITIAL_CITIES_LOAD_ERROR = "InitialCitiesLoadError"
         const val EVENT_CITIES_LIST_EMPTY = "CitiesListDisplayedEmpty"
+        const val EVENT_SEARCH_QUERY_CHANGED = "SearchQueryChanged"
     }
 }
